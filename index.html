@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light City SMP - 2v2 Tournament</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f1115;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #090a0c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .loader {
+            border: 4px solid #1e293b;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3b82f6;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            background-color: #30363d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 12px;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: #8b949e;
+            font-size: 18px;
+        }
+
+        .team-creation {
+            background-color: #161b22;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+        }
+
+        .team-creation h2 {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #c9d1d9;
+        }
+
+        .input-group input[type="text"] {
+            padding: 12px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            color: #e2e8f0;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input[type="text"]:focus {
+            border-color: #3b82f6;
+        }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .checkbox-group input {
+            margin-top: 4px;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .team-slots {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .slot {
+            flex: 1;
+            background-color: #0d1117;
+            border: 1px dashed #30363d;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        .slot h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #8b949e;
+        }
+
+        .invite-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .invite-section input {
+            padding: 8px;
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .action-btn {
+            background-color: #238636;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #2ea043;
+            transform: scale(1.02);
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #30363d;
+            padding-top: 20px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-badge.pending {
+            background-color: #d29922;
+            color: #ffffff;
+        }
+
+        .status-badge.accepted {
+            background-color: #238636;
+            color: #ffffff;
+        }
+
+        .status-badge.denied {
+            background-color: #da3633;
+            color: #ffffff;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #161b22;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #30363d;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #8b949e;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #e2e8f0;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 10px;
+            color: #3b82f6;
+        }
+
+        .modal-content h3 {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 5px;
+        }
+
+        .modal-content ul {
+            list-style-position: inside;
+            color: #c9d1d9;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: #8b949e;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <h1>Loading Light City SMP...</h1>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">Light City SMP</div>
+        <div class="nav-links">
+            <button class="nav-btn" id="rules-btn">Rules</button>
+            <button class="nav-btn" id="notify-btn">Notifications <span class="badge">0</span></button>
+            <button class="nav-btn" id="auth-btn">Sign In / Sign Up</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>$70 Official 2v2 Tournament</h1>
+            <p>Assemble your team and fight for the prize pool.</p>
+        </section>
+
+        <section class="team-creation">
+            <h2>Create Your Team</h2>
+            <form id="team-form">
+                <div class="input-group">
+                    <label for="team-name">Team Name:</label>
+                    <input type="text" id="team-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="mc-username">Your Minecraft Username:</label>
+                    <input type="text" id="mc-username" required>
+                </div>
+                <div class="input-group">
+                    <label for="tier">What's your tested tier in Minecraft? (Include the tierlist you tested on, suggested lt3+):</label>
+                    <input type="text" id="tier" required>
+                </div>
+                <div class="input-group checkbox-group">
+                    <input type="checkbox" id="pc-check" required>
+                    <label for="pc-check">Do you consent the owner and admins of Light City SMP to do a PC check to make sure there are no exploits/hack clients before joining the tournament?</label>
+                </div>
+            </form>
+
+            <div class="team-slots">
+                <div class="slot" id="slot-1">
+                    <h3>Slot 1 (Captain)</h3>
+                    <p id="slot-1-name" style="color: #8b949e; font-weight: bold;">Pending Form Submission...</p>
+                </div>
+                <div class="slot" id="slot-2">
+                    <h3>Slot 2 (Teammate)</h3>
+                    <div class="invite-section">
+                        <input type="text" id="invite-input" placeholder="Enter Username or Email">
+                        <button class="action-btn" id="invite-btn">Invite</button>
+                    </div>
+                    <div id="invite-status" class="status-badge pending" style="display: none; margin-top: 15px;">Pending</div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="action-btn" id="submit-team-btn">Submit Application</button>
+                <div id="application-status" class="status-badge pending" style="display: none;">Pending Moderation</div>
+            </div>
+        </section>
+    </main>
+
+    <div id="rules-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>LIGHT CITY SMP — Official 2v2 Tournament Rulebook</h2>
+            <p>Prize Pool: $70.00 | Format: 2v2</p>
+            <p>By registering, you acknowledge and agree to every rule listed in this document.</p>
+            
+            <h3>1. General Conduct & SMP Rules</h3>
+            <ul>
+                <li>All standard Light City SMP server rules are in full effect throughout the entire tournament, including warm-ups, practices, and post-match periods.</li>
+                <li>Disruptive behavior, trolling, intentional griefing, or refusing to follow admin orders will result in immediate removal from the tournament with no refund or compensation.</li>
+                <li>Any form of harassment or targeted toxicity toward other players, spectators, or staff is forbidden. General competitive banter is fine — targeted abuse is not.</li>
+                <li>Teammates are equally responsible for each other's conduct. If one player is removed for rule violations, their partner is also eliminated.</li>
+                <li>By signing up, you formally agree to all rules listed here. Ignorance of the rules is not a valid excuse. If you don't agree, don't register.</li>
+            </ul>
+
+            <h3>2. Client Modifications & PC Checks</h3>
+            <ul>
+                <li>Cheating, exploiting, or use of any unauthorized client modifications is strictly prohibited. This includes kill aura, reach hacks, auto-clicker, anti-knockback, or anything that gives an unfair advantage.</li>
+                <li>Approved mods include: Optifine, FPS-boosting mods, brightness/gamma mods, and minimaps that do not show players or entities. If you're unsure whether your mod is allowed, ask an admin before the tournament — not during.</li>
+                <li>You must explicitly consent to a full PC check by Light City SMP administration before joining. Refusing = automatic disqualification.</li>
+                <li>If suspicious gameplay is observed, an additional PC check may be requested at any point. Refusal at that stage also results in immediate disqualification.</li>
+                <li>Any player found cheating will be permanently banned from all future Light City SMP tournaments.</li>
+            </ul>
+
+            <h3>3. Team Composition & Registration</h3>
+            <ul>
+                <li>Teams must be exactly 2 players. Solo entries will not be accepted.</li>
+                <li>Rosters are locked once the bracket is published. No substitutions after that point, for any reason.</li>
+                <li>Each player may only be on one team. Playing for multiple teams or standing in for another team will get both teams disqualified.</li>
+                <li>Register using your exact in-game Minecraft usernames as they appear on the server.</li>
+                <li>All players must already be members of the Light City SMP server before the registration deadline.</li>
+            </ul>
+
+            <h3>4. Match Integrity & Combat</h3>
+            <ul>
+                <li>Going AFK, logging off, disconnecting intentionally, or stalling mid-fight is forbidden. The match will not be paused for any of these.</li>
+                <li>If you drop a weapon or item during combat, that's on you. No redos, no pauses, no item recovery.</li>
+                <li>Pearling to arena borders to heal, glitching outside the designated area, or exploiting any map bugs is prohibited.</li>
+                <li>Any PvP outside the designated arena results in a formal warning. Second offense = permanent removal from the tournament.</li>
+                <li>Throwing matches, teaming with your opponents, or colluding to manipulate bracket results will get all parties involved disqualified immediately.</li>
+                <li>You may not use consumables, potions, or gear that wasn't approved in the tournament loadout. No outside items in the arena.</li>
+            </ul>
+
+            <h3>5. Connectivity & Proof Recording</h3>
+            <ul>
+                <li>All players must record their gameplay at all times during the tournament. If you can't record, your application will be denied.</li>
+                <li>If you disconnect or lag out during a match, you must provide video proof immediately. No proof = the result stands, no exceptions.</li>
+                <li>Your recording software must be running before you enter the arena. "I forgot to record" is not grounds for a redo.</li>
+                <li>Recordings must show your full screen. Cropped or partial recordings will not be accepted as valid proof in any dispute.</li>
+                <li>If both players on a team disconnect due to a verified server-side issue, an admin may choose to replay the match at their discretion. This is not guaranteed.</li>
+            </ul>
+
+            <h3>6. Communication</h3>
+            <ul>
+                <li>All participants must be in the designated Discord tournament voice channel during their matches. Non-negotiable.</li>
+                <li>Failure to join within 5 minutes of your match being called = forfeit warning. 10 minutes = full forfeit.</li>
+                <li>You can talk to your teammate in a private call, but you must remain audible in the tournament voice channel for admin communication.</li>
+                <li>Spectators are not allowed to feed callouts or info to players mid-match. First offense is a warning, second is disqualification.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 800);
+            }, 1500);
+        });
+
+        const rulesBtn = document.getElementById('rules-btn');
+        const rulesModal = document.getElementById('rules-modal');
+        const closeModal = document.querySelector('.close-modal');
+
+        rulesBtn.addEventListener('click', () => {
+            rulesModal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            rulesModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === rulesModal) {
+                rulesModal.style.display = 'none';
+            }
+        });
+
+        const mcUsernameInput = document.getElementById('mc-username');
+        const slot1Name = document.getElementById('slot-1-name');
+
+        mcUsernameInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            if (val) {
+                slot1Name.textContent = val;
+                slot1Name.style.color = '#3b82f6';
+            } else {
+                slot1Name.textContent = 'Pending Form Submission...';
+                slot1Name.style.color = '#8b949e';
+            }
+        });
+
+        const inviteBtn = document.getElementById('invite-btn');
+        const inviteInput = document.getElementById('invite-input');
+        const inviteStatus = document.getElementById('invite-status');
+
+        inviteBtn.addEventListener('click', () => {
+            const val = inviteInput.value.trim();
+            if (val) {
+                inviteStatus.style.display = 'inline-block';
+                inviteStatus.textContent = `Invite Sent to ${val}`;
+                inviteStatus.className = 'status-badge pending';
+                inviteInput.value = '';
+            }
+        });
+
+        const submitTeamBtn = document.getElementById('submit-team-btn');
+        const appStatus = document.getElementById('application-status');
+
+        submitTeamBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const teamName = document.getElementById('team-name').value;
+            const mcUser = document.getElementById('mc-username').value;
+            const tier = document.getElementById('tier').value;
+            const pcCheck = document.getElementById('pc-check').checked;
+
+            if (teamName && mcUser && tier && pcCheck) {
+                appStatus.style.display = 'inline-block';
+                appStatus.textContent = 'Pending Moderation';
+                appStatus.className = 'status-badge pending';
+            } else {
+                alert('Please fill out all required fields and consent to the PC check.');
+            }
+        });
+    </script>
+</body>
+</html>
