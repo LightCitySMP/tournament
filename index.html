@@ -292,7 +292,7 @@
                 <h2>Authentication</h2>
                 <form id="auth-form">
                     <div class="input-group">
-                        <label for="auth-username">Minecraft Username:</label>
+                        <label for="auth-username">Account Email or Username:</label>
                         <input type="text" id="auth-username" required>
                     </div>
                     <div class="input-group">
@@ -309,16 +309,20 @@
                 <h2>Create Your Team</h2>
                 <form id="team-form">
                     <div class="input-group">
-                        <label for="team-name">Team Name:</label>
+                        <label for="team-name">Team name:</label>
                         <input type="text" id="team-name" required>
                     </div>
                     <div class="input-group">
-                        <label for="tier">Tested Tier (suggested lt3+):</label>
+                        <label for="mc-username">Your minecraft username:</label>
+                        <input type="text" id="mc-username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="tier">Whats your tested tier in minecraft? and include the tierlist your tested on (suggested lt3+):</label>
                         <input type="text" id="tier" required>
                     </div>
                     <div class="input-group checkbox-group">
                         <input type="checkbox" id="pc-check" required>
-                        <label for="pc-check">Consent to PC check by Light City SMP admins?</label>
+                        <label for="pc-check">Do you consent the owner and admins of light city smp to do a PC check to make sure there are no exploits/hack clients before joining the tournament?</label>
                     </div>
                     <div class="form-actions">
                         <button class="action-btn" id="submit-team-btn">Submit Application</button>
@@ -338,7 +342,7 @@
                     <div class="slot" id="dash-slot-2">
                         <h3>Slot 2 (Teammate)</h3>
                         <div id="invite-ui">
-                            <input type="text" id="invite-input" placeholder="Username" style="padding: 8px; width:100%; margin-bottom:10px; background-color: #161b22; border: 1px solid #30363d; color: white; border-radius: 4px;">
+                            <input type="text" id="invite-input" placeholder="Username or Email" style="padding: 8px; width:100%; margin-bottom:10px; background-color: #161b22; border: 1px solid #30363d; color: white; border-radius: 4px;">
                             <button class="action-btn" id="invite-btn" style="width:100%;">Invite</button>
                         </div>
                         <p id="dash-teammate-name" style="display:none; color: #3b82f6; font-weight: bold;"></p>
@@ -399,7 +403,7 @@
 
         function loadDashboard() {
             document.getElementById('dash-team-name').textContent = currentTeam.name;
-            document.getElementById('dash-capt-name').textContent = currentTeam.captain;
+            document.getElementById('dash-capt-name').textContent = currentTeam.captainMc;
             const statusBadge = document.getElementById('dash-status');
             statusBadge.textContent = currentTeam.status;
             statusBadge.className = `status-badge ${currentTeam.status.toLowerCase()}`;
@@ -463,14 +467,16 @@
         document.getElementById('submit-team-btn').addEventListener('click', async (e) => {
             e.preventDefault();
             const teamName = document.getElementById('team-name').value;
+            const mcUsername = document.getElementById('mc-username').value;
             const tier = document.getElementById('tier').value;
             const pcCheck = document.getElementById('pc-check').checked;
 
-            if (teamName && tier && pcCheck) {
+            if (teamName && mcUsername && tier && pcCheck) {
                 currentTeam = {
                     name: teamName,
-                    captain: currentUser,
+                    captainMc: mcUsername,
                     tier: tier,
+                    pcCheck: pcCheck,
                     status: 'Pending',
                     teammate: null
                 };
