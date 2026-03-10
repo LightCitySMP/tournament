@@ -3,410 +3,725 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Light City SMP - Rules</title>
+    <title>Light City SMP — $70 2v2 Tournament</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --bg: #0a0c10;
+            --bg2: #0f1318;
+            --bg3: #141920;
+            --surface: #161d27;
+            --surface2: #1c2533;
+            --border: #1e2d3d;
+            --border2: #243345;
+            --accent: #2563eb;
+            --accent2: #3b82f6;
+            --accent-glow: rgba(37, 99, 235, 0.25);
+            --gold: #f0b429;
+            --gold-dim: #a07820;
+            --text: #d4e0ef;
+            --text2: #8aa0b8;
+            --text3: #4d6a85;
+            --win: #16a34a;
+            --win-bg: rgba(22, 163, 74, 0.1);
+            --red: #dc2626;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background-color: #0f1115;
-            color: #e2e8f0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
             overflow-x: hidden;
         }
+
+        /* === BACKGROUND GRID === */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* === LOADING SCREEN === */
         #loading-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #090a0c;
+            inset: 0;
+            background: var(--bg);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             z-index: 9999;
-            transition: opacity 0.8s ease-out;
+            transition: opacity 0.6s ease;
         }
-        .loader {
-            border: 4px solid #1e293b;
-            border-top: 4px solid #3b82f6;
+        .loader-ring {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border2);
+            border-top-color: var(--accent2);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 18px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loading-screen span {
+            font-family: 'Anybody', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text3);
         }
+
+        /* === NAVBAR === */
         .navbar {
+            position: relative;
+            z-index: 10;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
-            background-color: #161b22;
-            border-bottom: 1px solid #30363d;
+            padding: 0 48px;
+            height: 64px;
+            background: rgba(10,12,16,0.9);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
         }
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #3b82f6;
-            letter-spacing: 1px;
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 0.05em;
+            color: var(--text);
         }
-        .nav-links {
+        .logo span { color: var(--accent2); }
+        .nav-tabs {
             display: flex;
-            gap: 20px;
-            position: relative;
+            gap: 4px;
         }
-        .nav-btn {
+        .nav-tab {
             background: transparent;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 8px 16px;
+            border: none;
+            color: var(--text3);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 7px 16px;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .nav-tab:hover { color: var(--text2); background: var(--surface); }
+        .nav-tab.active { color: var(--accent2); background: rgba(37,99,235,0.12); }
+        .nav-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #0a0c10;
+            font-family: 'Anybody', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        /* === MAIN LAYOUT === */
+        main {
             position: relative;
-        }
-        .nav-btn:hover {
-            background-color: #30363d;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .container {
-            max-width: 900px;
+            z-index: 1;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 0 24px 80px;
         }
-        .view-section {
-            display: none;
-        }
-        .view-section.active {
-            display: block;
-        }
+
+        /* === HERO === */
         .hero {
             text-align: center;
-            margin-bottom: 50px;
+            padding: 64px 0 48px;
+        }
+        .hero-eyebrow {
+            font-family: 'Anybody', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 14px;
         }
         .hero h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            font-family: 'Anybody', sans-serif;
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #e2eeff 0%, #93bbf7 50%, var(--accent2) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .hero-prize {
+            font-family: 'Anybody', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 10px;
         }
         .hero p {
-            color: #8b949e;
-            font-size: 18px;
+            color: var(--text3);
+            font-size: 15px;
+            max-width: 440px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
-        .panel-box {
-            background-color: #161b22;
-            padding: 30px;
+
+        /* === SECTION === */
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* === PANEL === */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            border: 1px solid #30363d;
-            margin-bottom: 20px;
+            overflow: hidden;
         }
-        .panel-box h2 {
-            margin-bottom: 25px;
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 10px;
-        }
-        .input-group {
-            margin-bottom: 20px;
+        .panel + .panel { margin-top: 16px; }
+        .panel-header {
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--border);
             display: flex;
-            flex-direction: column;
-        }
-        .input-group label {
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #c9d1d9;
-        }
-        .input-group input[type="text"], .input-group input[type="password"] {
-            padding: 12px;
-            background-color: #0d1117;
-            border: 1px solid #30363d;
-            color: #e2e8f0;
-            border-radius: 6px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        .input-group input:focus {
-            border-color: #3b82f6;
-        }
-        .checkbox-group {
-            flex-direction: row;
-            align-items: flex-start;
+            align-items: center;
             gap: 10px;
         }
-        .checkbox-group input {
-            margin-top: 4px;
+        .panel-header h2 {
+            font-family: 'Anybody', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text);
         }
-        .checkbox-group label {
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .action-btn {
-            background-color: #238636;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .action-btn:hover {
-            background-color: #2ea043;
-            transform: scale(1.02);
-        }
-        .form-actions {
-            margin-top: 30px;
+        .panel-icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(37,99,235,0.15);
+            border-radius: 7px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-top: 1px solid #30363d;
-            padding-top: 20px;
-        }
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-        }
-        .status-badge.pending { background-color: #d29922; color: #ffffff; }
-        .status-badge.accepted { background-color: #238636; color: #ffffff; }
-        .status-badge.denied { background-color: #da3633; color: #ffffff; }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: rgba(0,0,0,0.8);
-            z-index: 10000;
             justify-content: center;
+            font-size: 14px;
+        }
+        .panel-body { padding: 28px; }
+
+        /* === RULES SECTION === */
+        .rule-category {
+            margin-bottom: 28px;
+        }
+        .rule-category:last-child { margin-bottom: 0; }
+        .rule-cat-title {
+            font-family: 'Anybody', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rule-cat-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border2);
+        }
+        .rule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .rule-item {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 13px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            line-height: 1.55;
+            color: var(--text2);
+            transition: border-color 0.2s;
+        }
+        .rule-item:hover { border-color: var(--border2); }
+        .rule-num {
+            font-family: 'Anybody', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            min-width: 20px;
+            margin-top: 1px;
+        }
+        .rule-item strong { color: var(--text); }
+
+        /* === BRACKET SECTION === */
+        .bracket-wrapper {
+            overflow-x: auto;
+            padding: 8px 0 16px;
+        }
+        .bracket {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            min-width: 900px;
+            padding: 20px 0;
+        }
+
+        /* Round columns */
+        .round-col {
+            display: flex;
+            flex-direction: column;
             align-items: center;
         }
-        .modal-content {
-            background-color: #161b22;
-            padding: 40px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid #30363d;
+        .round-label {
+            font-family: 'Anybody', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .round-matches {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        /* Match */
+        .match {
+            display: flex;
+            flex-direction: column;
+            width: 148px;
+            margin: 6px 0;
+        }
+        .team-slot {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.2s;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            min-height: 34px;
+        }
+        .team-slot + .team-slot {
+            margin-top: 3px;
+        }
+        .team-slot.filled {
+            color: var(--text);
+            border-color: var(--border2);
+            background: var(--surface2);
+        }
+        .team-slot.winner {
+            color: #4ade80;
+            border-color: #16a34a;
+            background: var(--win-bg);
+            font-weight: 600;
+        }
+        .team-slot.tbd {
+            color: var(--text3);
+            font-style: italic;
+            font-size: 11px;
+        }
+        .team-seed {
+            font-family: 'Anybody', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text3);
+            min-width: 14px;
+        }
+        .team-name { flex: 1; }
+        .team-score {
+            font-family: 'Anybody', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text3);
+            min-width: 14px;
+            text-align: right;
+        }
+        .team-slot.winner .team-score { color: #4ade80; }
+
+        /* Connector lines */
+        .connector {
+            width: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-self: stretch;
             position: relative;
         }
-        .close-modal {
+
+        /* SVG connectors drawn via JS */
+        .bracket-svg-layer {
             position: absolute;
-            top: 20px;
-            right: 25px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #8b949e;
-            cursor: pointer;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
-        .info-card {
-            background-color: #0d1117;
-            border: 1px dashed #30363d;
-            padding: 20px;
-            border-radius: 8px;
+        .bracket-outer {
+            position: relative;
+        }
+
+        /* Finals match styling */
+        .match.finals .team-slot {
+            border-color: var(--gold-dim);
+            background: rgba(240,180,41,0.05);
+        }
+        .match.finals .team-slot.filled {
+            color: var(--gold);
+            border-color: var(--gold);
+            background: rgba(240,180,41,0.1);
+        }
+        .finals-crown {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        /* Round spacing multipliers for vertical distribution */
+        .round-qf .round-matches { gap: 10px; }
+        .round-sf .round-matches { gap: 86px; }
+        .round-f .round-matches { gap: 0; }
+
+        /* horizontal line connectors */
+        .h-line {
+            width: 28px;
+            height: 2px;
+            background: var(--border2);
+            align-self: center;
+        }
+        .v-branch {
+            width: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* === CONFIG LEGEND === */
+        .config-note {
             margin-top: 20px;
+            background: rgba(37,99,235,0.06);
+            border: 1px solid rgba(37,99,235,0.2);
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 13px;
+            color: var(--text3);
+            line-height: 1.6;
+        }
+        .config-note code {
+            background: var(--bg3);
+            border: 1px solid var(--border2);
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--accent2);
         }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <div class="loader"></div>
-        <h1>Loading Light City SMP...</h1>
+
+<div id="loading-screen">
+    <div class="loader-ring"></div>
+    <span>Light City SMP</span>
+</div>
+
+<nav class="navbar">
+    <div class="logo">Light<span>City</span>SMP</div>
+    <div class="nav-tabs">
+        <button class="nav-tab active" data-section="rules">Rules</button>
+        <button class="nav-tab" data-section="bracket">Bracket <span class="nav-badge">$70</span></button>
+    </div>
+</nav>
+
+<main>
+    <div class="hero">
+        <div class="hero-eyebrow">Official Event</div>
+        <h1>2v2 Tournament</h1>
+        <div class="hero-prize">$70 Prize Pool</div>
+        <p>Official rulebook and live bracket for the LightCitySMP 2v2 tournament.</p>
     </div>
 
-    <nav class="navbar">
-        <div class="logo">Light City SMP</div>
-        <div class="nav-links">
-            <button class="nav-btn" id="rules-btn">Rules</button>
-            <button class="nav-btn" id="auth-nav-btn">Sign In / Sign Up</button>
-            <button class="nav-btn" id="logout-btn" style="display:none;">Log Out</button>
-        </div>
-    </nav>
+    <!-- ===== RULES ===== -->
+    <section id="rules" class="section active">
 
-    <main class="container">
-        <section class="hero">
-            <h1>$70 Official Tournament</h1>
-            <p>Register below and fight for the prize pool.</p>
-        </section>
-
-        <section id="auth-view" class="view-section">
-            <div class="panel-box">
-                <h2>Authentication</h2>
-                <form id="auth-form">
-                    <div class="input-group">
-                        <label for="auth-username">Account Email or Username:</label>
-                        <input type="text" id="auth-username" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="auth-password">Password:</label>
-                        <input type="password" id="auth-password" required>
-                    </div>
-                    <button class="action-btn" id="login-submit">Sign In / Sign Up</button>
-                </form>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon">📋</div>
+                <h2>Tournament Rulebook</h2>
             </div>
-        </section>
+            <div class="panel-body">
 
-        <section id="create-view" class="view-section">
-            <div class="panel-box">
-                <h2>Tournament Registration</h2>
-                <form id="app-form">
-                    <div class="input-group">
-                        <label for="mc-username">Your Minecraft Username:</label>
-                        <input type="text" id="mc-username" required>
+                <div class="rule-category">
+                    <div class="rule-cat-title">General Conduct</div>
+                    <div class="rule-list">
+                        <div class="rule-item"><span class="rule-num">01</span><span>All standard <strong>Light City SMP server rules</strong> are in full effect throughout the entire tournament.</span></div>
+                        <div class="rule-item"><span class="rule-num">02</span><span>Disruptive behavior, trolling, intentional griefing, or refusing to follow admin orders will result in <strong>immediate removal</strong>.</span></div>
+                        <div class="rule-item"><span class="rule-num">03</span><span>Any form of <strong>harassment or targeted toxicity</strong> is strictly forbidden.</span></div>
+                        <div class="rule-item"><span class="rule-num">04</span><span>By participating, you formally agree to every rule listed in this document.</span></div>
                     </div>
-                    <div class="input-group">
-                        <label for="tier">What is your tested tier in Minecraft? (Include the tierlist you tested on, suggested lt3+):</label>
-                        <input type="text" id="tier" required>
-                    </div>
-                    <div class="input-group checkbox-group">
-                        <input type="checkbox" id="pc-check" required>
-                        <label for="pc-check">Do you consent the owner and admins of Light City SMP to do a PC check to make sure there are no exploits/hack clients before joining the tournament?</label>
-                    </div>
-                    <div class="form-actions">
-                        <button class="action-btn" id="submit-app-btn">Submit Application</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <section id="dashboard-view" class="view-section">
-            <div class="panel-box">
-                <h2>Player Dashboard</h2>
-                <div class="info-card">
-                    <h3 style="color: #8b949e; margin-bottom: 10px; font-size: 16px;">Registered Username</h3>
-                    <p id="dash-player-name" style="color: #3b82f6; font-size: 20px; font-weight: bold;"></p>
                 </div>
-                <div class="form-actions" style="justify-content: flex-end;">
-                    <div id="dash-status" class="status-badge pending">Application Pending</div>
+
+                <div class="rule-category">
+                    <div class="rule-cat-title">Equipment & Inventory</div>
+                    <div class="rule-list">
+                        <div class="rule-item"><span class="rule-num">05</span><span>Participants must compete using their own <strong>independently acquired</strong> in-game gear.</span></div>
+                        <div class="rule-item"><span class="rule-num">06</span><span>A mandatory <strong>inventory check</strong> will be conducted prior to entering the arena. Under-geared players may not be permitted to participate.</span></div>
+                        <div class="rule-item"><span class="rule-num">07</span><span>The <strong>Mace</strong> is permitted but strictly limited to one per participant — only the designated holder may use it.</span></div>
+                        <div class="rule-item"><span class="rule-num">08</span><span>Utility items including <strong>TNT and TNT Minecarts</strong> are permitted unless listed on the server's banned items registry.</span></div>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <div class="rule-cat-title">2v2 Format</div>
+                    <div class="rule-list">
+                        <div class="rule-item"><span class="rule-num">09</span><span>Teams consist of exactly <strong>2 players</strong>. Team compositions are locked at registration.</span></div>
+                        <div class="rule-item"><span class="rule-num">10</span><span>Matches are <strong>Best of 3</strong>. Grand Finals are Best of 5.</span></div>
+                        <div class="rule-item"><span class="rule-num">11</span><span>Both players of a team must be present and ready within <strong>5 minutes</strong> of the scheduled match time or the team forfeits.</span></div>
+                        <div class="rule-item"><span class="rule-num">12</span><span>Admin rulings on disputes are <strong>final and non-negotiable</strong>.</span></div>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <div class="rule-cat-title">Anti-Cheat & PC Check</div>
+                    <div class="rule-list">
+                        <div class="rule-item"><span class="rule-num">13</span><span>All participants consent to a <strong>PC check</strong> by owner and admins to verify no exploits or hack clients are present before joining.</span></div>
+                        <div class="rule-item"><span class="rule-num">14</span><span>Any player found using a <strong>banned client, macro, or exploit</strong> will be immediately disqualified and banned from future events.</span></div>
+                        <div class="rule-item"><span class="rule-num">15</span><span>Suggested minimum tier is <strong>lt3+</strong> on any recognized tierlist. Include the tierlist name when registering.</span></div>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <div class="rule-cat-title">Prizes & Payouts</div>
+                    <div class="rule-list">
+                        <div class="rule-item"><span class="rule-num">16</span><span>The total prize pool is <strong>$70.00 USD</strong>. Distribution will be announced before the tournament begins.</span></div>
+                        <div class="rule-item"><span class="rule-num">17</span><span>Prizes are paid out within <strong>48 hours</strong> of the final match. Disqualified teams forfeit any prize claim.</span></div>
+                        <div class="rule-item"><span class="rule-num">18</span><span>Administration reserves the right to <strong>withhold or redistribute prizes</strong> in the event of confirmed rule violations.</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ===== BRACKET ===== -->
+    <section id="bracket" class="section">
+
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon">🏆</div>
+                <h2>Tournament Bracket — 2v2</h2>
+            </div>
+            <div class="panel-body">
+                <div class="bracket-wrapper">
+                    <div id="bracket-root"></div>
+                </div>
+                <div class="config-note">
+                    To update teams and scores, edit the <code>BRACKET_CONFIG</code> object at the top of the <code>&lt;script&gt;</code> tag. Set <code>winner: 1</code> or <code>winner: 2</code> to advance a team, and fill in <code>score</code> values as matches are played.
                 </div>
             </div>
-        </section>
-    </main>
-
-    <div id="rules-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>LIGHT CITY SMP — Official Tournament Rulebook</h2>
-            <p style="margin-bottom: 20px; color: #8b949e;">Prize Pool: $70.00 | By registering, you acknowledge and agree to every rule listed in this document.</p>
-            
-            <h3 style="color: #e2e8f0; border-bottom: 1px solid #30363d; padding-bottom: 5px; margin-bottom: 10px; margin-top: 20px;">1. General Conduct & SMP Rules</h3>
-            <ul style="color: #c9d1d9; line-height: 1.6; margin-left: 20px; margin-bottom: 15px;">
-                <li>All standard Light City SMP server rules are in full effect throughout the entire tournament.</li>
-                <li>Disruptive behavior, trolling, intentional griefing, or refusing to follow admin orders will result in immediate removal.</li>
-                <li>Any form of harassment or targeted toxicity is forbidden.</li>
-                <li>By signing up, you formally agree to all rules listed here.</li>
-            </ul>
-
-            <h3 style="color: #e2e8f0; border-bottom: 1px solid #30363d; padding-bottom: 5px; margin-bottom: 10px; margin-top: 20px;">2. Equipment & Inventory Requirements</h3>
-            <ul style="color: #c9d1d9; line-height: 1.6; margin-left: 20px; margin-bottom: 15px;">
-                <li>Participants must compete using their own independently acquired in-game gear.</li>
-                <li>A mandatory inventory check will be conducted prior to entering the tournament arena. Players deemed under-geared by administration will not be permitted to participate.</li>
-                <li>The use of a Mace is permitted, but it is strictly limited to one per participant. Only the designated holder is allowed to utilize the Mace.</li>
-                <li>Utility items, including TNT and TNT minecarts, are permitted for use during combat unless specifically listed on the server's banned items registry.</li>
-            </ul>
         </div>
-    </div>
 
-    <script>
-        let currentUser = localStorage.getItem('lc_user');
-        let currentApp = JSON.parse(localStorage.getItem('lc_app'));
+    </section>
+</main>
 
-        const views = {
-            auth: document.getElementById('auth-view'),
-            create: document.getElementById('create-view'),
-            dashboard: document.getElementById('dashboard-view')
-        };
+<script>
+// ============================================================
+//  BRACKET CONFIG — edit this to set teams, scores, winners
+// ============================================================
+const BRACKET_CONFIG = {
+    // 8 teams (4 QF matches on each side — left side feeds into SF1/SF2, right side into SF3/SF4)
+    // Each match: { team1, team2, score1, score2, winner }
+    // winner: 0 = no result yet | 1 = team1 won | 2 = team2 won
+    // scores are optional display strings e.g. "2", "1", etc.
+    quarterFinals: [
+        // LEFT SIDE
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0 },  // QF1
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0 },  // QF2
+        // RIGHT SIDE
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0 },  // QF3
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0 },  // QF4
+    ],
+    semiFinals: [
+        // Winners of QF1 vs QF2
+        { score1: "", score2: "", winner: 0 },  // SF1
+        // Winners of QF3 vs QF4
+        { score1: "", score2: "", winner: 0 },  // SF2
+    ],
+    // Grand Final — winners of SF1 vs SF2
+    grandFinal: { score1: "", score2: "", winner: 0 },
+};
+// ============================================================
 
-        function switchView() {
-            Object.values(views).forEach(v => v.classList.remove('active'));
-            if (!currentUser) {
-                views.auth.classList.add('active');
-                document.getElementById('auth-nav-btn').style.display = 'block';
-                document.getElementById('logout-btn').style.display = 'none';
-            } else if (!currentApp) {
-                views.create.classList.add('active');
-                document.getElementById('auth-nav-btn').style.display = 'none';
-                document.getElementById('logout-btn').style.display = 'block';
-            } else {
-                views.dashboard.classList.add('active');
-                document.getElementById('auth-nav-btn').style.display = 'none';
-                document.getElementById('logout-btn').style.display = 'block';
-                loadDashboard();
-            }
-        }
+function getWinner(match, qfIndex) {
+    if (match.winner === 0) return null;
+    return match.winner === 1 ? match.team1 : match.team2;
+}
 
-        function loadDashboard() {
-            document.getElementById('dash-player-name').textContent = currentApp.mcUsername;
-            const statusBadge = document.getElementById('dash-status');
-            statusBadge.textContent = currentApp.status;
-            statusBadge.className = `status-badge ${currentApp.status.toLowerCase()}`;
-        }
+function buildBracket() {
+    const cfg = BRACKET_CONFIG;
+    const qf = cfg.quarterFinals;
+    const sf = cfg.semiFinals;
+    const gf = cfg.grandFinal;
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const ls = document.getElementById('loading-screen');
-                ls.style.opacity = '0';
-                setTimeout(() => { ls.style.display = 'none'; }, 800);
-            }, 1000);
-            switchView();
-        });
+    // Derive SF teams from QF results
+    const sfTeams = [
+        [ qf[0].winner ? (qf[0].winner===1?qf[0].team1:qf[0].team2) : null,
+          qf[1].winner ? (qf[1].winner===1?qf[1].team1:qf[1].team2) : null ],
+        [ qf[2].winner ? (qf[2].winner===1?qf[2].team1:qf[2].team2) : null,
+          qf[3].winner ? (qf[3].winner===1?qf[3].team1:qf[3].team2) : null ],
+    ];
 
-        document.getElementById('login-submit').addEventListener('click', (e) => {
-            e.preventDefault();
-            const user = document.getElementById('auth-username').value.trim();
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('lc_user', currentUser);
-                switchView();
-            }
-        });
+    // Derive GF teams from SF results
+    const gfTeams = [
+        sf[0].winner ? (sf[0].winner===1?sfTeams[0][0]:sfTeams[0][1]) : null,
+        sf[1].winner ? (sf[1].winner===1?sfTeams[1][0]:sfTeams[1][1]) : null,
+    ];
 
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            currentUser = null;
-            localStorage.removeItem('lc_user');
-            switchView();
-        });
+    function slot(name, seed, score, isWinner, isFinal) {
+        const filled = name && name !== "TBD";
+        const cls = isWinner ? 'winner' : (filled ? 'filled' : 'tbd');
+        const displayName = name || 'TBD';
+        return `<div class="team-slot ${cls}">
+            ${seed ? `<span class="team-seed">${seed}</span>` : ''}
+            <span class="team-name">${displayName}</span>
+            ${score !== undefined && score !== "" ? `<span class="team-score">${score}</span>` : ''}
+        </div>`;
+    }
 
-        document.getElementById('submit-app-btn').addEventListener('click', async (e) => {
-            e.preventDefault();
-            const mcUsername = document.getElementById('mc-username').value;
-            const tier = document.getElementById('tier').value;
-            const pcCheck = document.getElementById('pc-check').checked;
+    function match(t1, t2, s1, s2, w, isFinals, seed1, seed2) {
+        const w1 = w === 1, w2 = w === 2;
+        return `<div class="match${isFinals?' finals':''}">
+            ${slot(t1, seed1, s1, w1, isFinals)}
+            ${slot(t2, seed2, s2, w2, isFinals)}
+        </div>`;
+    }
 
-            if (mcUsername && tier && pcCheck) {
-                currentApp = {
-                    mcUsername: mcUsername,
-                    tier: tier,
-                    pcCheck: pcCheck,
-                    status: 'Pending'
-                };
-                localStorage.setItem('lc_app', JSON.stringify(currentApp));
-                switchView();
+    const html = `
+    <div style="display:flex;align-items:center;justify-content:center;gap:0;min-width:860px;">
 
-                try {
-                    await fetch('http://localhost:3000/api/apply', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(currentApp)
-                    });
-                } catch (err) {}
-            }
-        });
+      <!-- QF Left -->
+      <div class="round-col">
+        <div class="round-label">Quarterfinals</div>
+        <div class="round-matches" style="gap:28px;">
+          ${match(qf[0].team1, qf[0].team2, qf[0].score1, qf[0].score2, qf[0].winner, false, 1, 8)}
+          ${match(qf[1].team1, qf[1].team2, qf[1].score1, qf[1].score2, qf[1].winner, false, 4, 5)}
+        </div>
+      </div>
 
-        const rulesModal = document.getElementById('rules-modal');
-        document.getElementById('rules-btn').addEventListener('click', () => rulesModal.style.display = 'flex');
-        document.querySelector('.close-modal').addEventListener('click', () => rulesModal.style.display = 'none');
-    </script>
+      <!-- Connector left QF→SF -->
+      <svg width="48" height="180" style="overflow:visible;flex-shrink:0;">
+        <path d="M0,25 H24 V90 H0" fill="none" stroke="#1e2d3d" stroke-width="1.5"/>
+        <path d="M0,155 H24 V90 H0" fill="none" stroke="#1e2d3d" stroke-width="1.5"/>
+        <line x1="24" y1="90" x2="48" y2="90" stroke="#1e2d3d" stroke-width="1.5"/>
+      </svg>
+
+      <!-- SF Left -->
+      <div class="round-col">
+        <div class="round-label">Semifinals</div>
+        <div class="round-matches" style="gap:0;">
+          ${match(sfTeams[0][0], sfTeams[0][1], sf[0].score1, sf[0].score2, sf[0].winner, false)}
+        </div>
+      </div>
+
+      <!-- Connector left SF→GF -->
+      <svg width="48" height="30" style="overflow:visible;flex-shrink:0;">
+        <line x1="0" y1="15" x2="48" y2="15" stroke="#1e2d3d" stroke-width="1.5"/>
+      </svg>
+
+      <!-- Grand Final CENTER -->
+      <div class="round-col" style="align-items:center;">
+        <div class="round-label" style="color:var(--gold);">Grand Final</div>
+        <div class="finals-crown">🏆</div>
+        ${match(gfTeams[0], gfTeams[1], gf.score1, gf.score2, gf.winner, true)}
+      </div>
+
+      <!-- Connector right GF→SF -->
+      <svg width="48" height="30" style="overflow:visible;flex-shrink:0;">
+        <line x1="0" y1="15" x2="48" y2="15" stroke="#1e2d3d" stroke-width="1.5"/>
+      </svg>
+
+      <!-- SF Right -->
+      <div class="round-col">
+        <div class="round-label">Semifinals</div>
+        <div class="round-matches" style="gap:0;">
+          ${match(sfTeams[1][0], sfTeams[1][1], sf[1].score1, sf[1].score2, sf[1].winner, false)}
+        </div>
+      </div>
+
+      <!-- Connector right SF→QF -->
+      <svg width="48" height="180" style="overflow:visible;flex-shrink:0;">
+        <path d="M48,25 H24 V90 H48" fill="none" stroke="#1e2d3d" stroke-width="1.5"/>
+        <path d="M48,155 H24 V90 H48" fill="none" stroke="#1e2d3d" stroke-width="1.5"/>
+        <line x1="0" y1="90" x2="24" y2="90" stroke="#1e2d3d" stroke-width="1.5"/>
+      </svg>
+
+      <!-- QF Right -->
+      <div class="round-col">
+        <div class="round-label">Quarterfinals</div>
+        <div class="round-matches" style="gap:28px;">
+          ${match(qf[2].team1, qf[2].team2, qf[2].score1, qf[2].score2, qf[2].winner, false, 2, 7)}
+          ${match(qf[3].team1, qf[3].team2, qf[3].score1, qf[3].score2, qf[3].winner, false, 3, 6)}
+        </div>
+      </div>
+
+    </div>`;
+
+    document.getElementById('bracket-root').innerHTML = html;
+}
+
+// === NAV ===
+document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.section).classList.add('active');
+        if (tab.dataset.section === 'bracket') buildBracket();
+    });
+});
+
+// === LOADING ===
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const ls = document.getElementById('loading-screen');
+        ls.style.opacity = '0';
+        setTimeout(() => ls.style.display = 'none', 600);
+    }, 900);
+});
+</script>
 </body>
 </html>
