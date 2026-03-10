@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Light City SMP - 2v2 Tournament</title>
+    <title>Light City SMP - Rules</title>
     <style>
         * {
             margin: 0;
@@ -77,40 +77,6 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .badge {
-            background-color: #ef4444;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 12px;
-            position: absolute;
-            top: -8px;
-            right: -8px;
-        }
-        #notifications-dropdown {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 120px;
-            width: 300px;
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 10px;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .notif-item {
-            padding: 10px;
-            border-bottom: 1px solid #30363d;
-            font-size: 14px;
-            color: #c9d1d9;
-        }
-        .notif-item:last-child {
-            border-bottom: none;
-        }
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -183,24 +149,6 @@
             font-size: 13px;
             line-height: 1.5;
         }
-        .team-slots {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .slot {
-            flex: 1;
-            background-color: #0d1117;
-            border: 1px dashed #30363d;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .slot h3 {
-            font-size: 16px;
-            margin-bottom: 15px;
-            color: #8b949e;
-        }
         .action-btn {
             background-color: #238636;
             color: #ffffff;
@@ -262,6 +210,13 @@
             color: #8b949e;
             cursor: pointer;
         }
+        .info-card {
+            background-color: #0d1117;
+            border: 1px dashed #30363d;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -274,8 +229,6 @@
         <div class="logo">Light City SMP</div>
         <div class="nav-links">
             <button class="nav-btn" id="rules-btn">Rules</button>
-            <button class="nav-btn" id="notify-btn">Notifications <span class="badge" id="notif-count">0</span></button>
-            <div id="notifications-dropdown"></div>
             <button class="nav-btn" id="auth-nav-btn">Sign In / Sign Up</button>
             <button class="nav-btn" id="logout-btn" style="display:none;">Log Out</button>
         </div>
@@ -283,8 +236,8 @@
 
     <main class="container">
         <section class="hero">
-            <h1>$70 Official 2v2 Tournament</h1>
-            <p>Assemble your team and fight for the prize pool.</p>
+            <h1>$70 Official Tournament</h1>
+            <p>Register below and fight for the prize pool.</p>
         </section>
 
         <section id="auth-view" class="view-section">
@@ -306,26 +259,22 @@
 
         <section id="create-view" class="view-section">
             <div class="panel-box">
-                <h2>Create Your Team</h2>
-                <form id="team-form">
+                <h2>Tournament Registration</h2>
+                <form id="app-form">
                     <div class="input-group">
-                        <label for="team-name">Team name:</label>
-                        <input type="text" id="team-name" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="mc-username">Your minecraft username:</label>
+                        <label for="mc-username">Your Minecraft Username:</label>
                         <input type="text" id="mc-username" required>
                     </div>
                     <div class="input-group">
-                        <label for="tier">Whats your tested tier in minecraft? and include the tierlist your tested on (suggested lt3+):</label>
+                        <label for="tier">What is your tested tier in Minecraft? (Include the tierlist you tested on, suggested lt3+):</label>
                         <input type="text" id="tier" required>
                     </div>
                     <div class="input-group checkbox-group">
                         <input type="checkbox" id="pc-check" required>
-                        <label for="pc-check">Do you consent the owner and admins of light city smp to do a PC check to make sure there are no exploits/hack clients before joining the tournament?</label>
+                        <label for="pc-check">Do you consent the owner and admins of Light City SMP to do a PC check to make sure there are no exploits/hack clients before joining the tournament?</label>
                     </div>
                     <div class="form-actions">
-                        <button class="action-btn" id="submit-team-btn">Submit Application</button>
+                        <button class="action-btn" id="submit-app-btn">Submit Application</button>
                     </div>
                 </form>
             </div>
@@ -333,20 +282,10 @@
 
         <section id="dashboard-view" class="view-section">
             <div class="panel-box">
-                <h2>Team Dashboard: <span id="dash-team-name"></span></h2>
-                <div class="team-slots">
-                    <div class="slot" id="dash-slot-1">
-                        <h3>Slot 1 (Captain)</h3>
-                        <p id="dash-capt-name" style="color: #3b82f6; font-weight: bold;"></p>
-                    </div>
-                    <div class="slot" id="dash-slot-2">
-                        <h3>Slot 2 (Teammate)</h3>
-                        <div id="invite-ui">
-                            <input type="text" id="invite-input" placeholder="Username or Email" style="padding: 8px; width:100%; margin-bottom:10px; background-color: #161b22; border: 1px solid #30363d; color: white; border-radius: 4px;">
-                            <button class="action-btn" id="invite-btn" style="width:100%;">Invite</button>
-                        </div>
-                        <p id="dash-teammate-name" style="display:none; color: #3b82f6; font-weight: bold;"></p>
-                    </div>
+                <h2>Player Dashboard</h2>
+                <div class="info-card">
+                    <h3 style="color: #8b949e; margin-bottom: 10px; font-size: 16px;">Registered Username</h3>
+                    <p id="dash-player-name" style="color: #3b82f6; font-size: 20px; font-weight: bold;"></p>
                 </div>
                 <div class="form-actions" style="justify-content: flex-end;">
                     <div id="dash-status" class="status-badge pending">Application Pending</div>
@@ -358,24 +297,30 @@
     <div id="rules-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2>LIGHT CITY SMP — Official 2v2 Tournament Rulebook</h2>
-            <p>Prize Pool: $70.00 | Format: 2v2</p>
-            <p>By registering, you acknowledge and agree to every rule listed in this document.</p>
-            <h3>1. General Conduct & SMP Rules</h3>
-            <ul>
+            <h2>LIGHT CITY SMP — Official Tournament Rulebook</h2>
+            <p style="margin-bottom: 20px; color: #8b949e;">Prize Pool: $70.00 | By registering, you acknowledge and agree to every rule listed in this document.</p>
+            
+            <h3 style="color: #e2e8f0; border-bottom: 1px solid #30363d; padding-bottom: 5px; margin-bottom: 10px; margin-top: 20px;">1. General Conduct & SMP Rules</h3>
+            <ul style="color: #c9d1d9; line-height: 1.6; margin-left: 20px; margin-bottom: 15px;">
                 <li>All standard Light City SMP server rules are in full effect throughout the entire tournament.</li>
                 <li>Disruptive behavior, trolling, intentional griefing, or refusing to follow admin orders will result in immediate removal.</li>
                 <li>Any form of harassment or targeted toxicity is forbidden.</li>
-                <li>Teammates are equally responsible for each other's conduct.</li>
                 <li>By signing up, you formally agree to all rules listed here.</li>
+            </ul>
+
+            <h3 style="color: #e2e8f0; border-bottom: 1px solid #30363d; padding-bottom: 5px; margin-bottom: 10px; margin-top: 20px;">2. Equipment & Inventory Requirements</h3>
+            <ul style="color: #c9d1d9; line-height: 1.6; margin-left: 20px; margin-bottom: 15px;">
+                <li>Participants must compete using their own independently acquired in-game gear.</li>
+                <li>A mandatory inventory check will be conducted prior to entering the tournament arena. Players deemed under-geared by administration will not be permitted to participate.</li>
+                <li>The use of a Mace is permitted, but it is strictly limited to one per participant. Only the designated holder is allowed to utilize the Mace.</li>
+                <li>Utility items, including TNT and TNT minecarts, are permitted for use during combat unless specifically listed on the server's banned items registry.</li>
             </ul>
         </div>
     </div>
 
     <script>
         let currentUser = localStorage.getItem('lc_user');
-        let currentTeam = JSON.parse(localStorage.getItem('lc_team'));
-        let notifications = JSON.parse(localStorage.getItem('lc_notifs')) || [];
+        let currentApp = JSON.parse(localStorage.getItem('lc_app'));
 
         const views = {
             auth: document.getElementById('auth-view'),
@@ -389,7 +334,7 @@
                 views.auth.classList.add('active');
                 document.getElementById('auth-nav-btn').style.display = 'block';
                 document.getElementById('logout-btn').style.display = 'none';
-            } else if (!currentTeam) {
+            } else if (!currentApp) {
                 views.create.classList.add('active');
                 document.getElementById('auth-nav-btn').style.display = 'none';
                 document.getElementById('logout-btn').style.display = 'block';
@@ -402,40 +347,10 @@
         }
 
         function loadDashboard() {
-            document.getElementById('dash-team-name').textContent = currentTeam.name;
-            document.getElementById('dash-capt-name').textContent = currentTeam.captainMc;
+            document.getElementById('dash-player-name').textContent = currentApp.mcUsername;
             const statusBadge = document.getElementById('dash-status');
-            statusBadge.textContent = currentTeam.status;
-            statusBadge.className = `status-badge ${currentTeam.status.toLowerCase()}`;
-
-            if (currentTeam.teammate) {
-                document.getElementById('invite-ui').style.display = 'none';
-                document.getElementById('dash-teammate-name').style.display = 'block';
-                document.getElementById('dash-teammate-name').textContent = currentTeam.teammate;
-            }
-        }
-
-        function addNotification(msg) {
-            notifications.push(msg);
-            localStorage.setItem('lc_notifs', JSON.stringify(notifications));
-            updateNotifications();
-        }
-
-        function updateNotifications() {
-            const drop = document.getElementById('notifications-dropdown');
-            const count = document.getElementById('notif-count');
-            drop.innerHTML = '';
-            count.textContent = notifications.length;
-            if (notifications.length === 0) {
-                drop.innerHTML = '<div class="notif-item">No new notifications</div>';
-            } else {
-                notifications.forEach(n => {
-                    const d = document.createElement('div');
-                    d.className = 'notif-item';
-                    d.textContent = n;
-                    drop.appendChild(d);
-                });
-            }
+            statusBadge.textContent = currentApp.status;
+            statusBadge.className = `status-badge ${currentApp.status.toLowerCase()}`;
         }
 
         window.addEventListener('load', () => {
@@ -445,7 +360,6 @@
                 setTimeout(() => { ls.style.display = 'none'; }, 800);
             }, 1000);
             switchView();
-            updateNotifications();
         });
 
         document.getElementById('login-submit').addEventListener('click', (e) => {
@@ -464,49 +378,30 @@
             switchView();
         });
 
-        document.getElementById('submit-team-btn').addEventListener('click', async (e) => {
+        document.getElementById('submit-app-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            const teamName = document.getElementById('team-name').value;
             const mcUsername = document.getElementById('mc-username').value;
             const tier = document.getElementById('tier').value;
             const pcCheck = document.getElementById('pc-check').checked;
 
-            if (teamName && mcUsername && tier && pcCheck) {
-                currentTeam = {
-                    name: teamName,
-                    captainMc: mcUsername,
+            if (mcUsername && tier && pcCheck) {
+                currentApp = {
+                    mcUsername: mcUsername,
                     tier: tier,
                     pcCheck: pcCheck,
-                    status: 'Pending',
-                    teammate: null
+                    status: 'Pending'
                 };
-                localStorage.setItem('lc_team', JSON.stringify(currentTeam));
-                addNotification('Your team application was submitted.');
+                localStorage.setItem('lc_app', JSON.stringify(currentApp));
                 switchView();
 
                 try {
                     await fetch('http://localhost:3000/api/apply', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(currentTeam)
+                        body: JSON.stringify(currentApp)
                     });
                 } catch (err) {}
             }
-        });
-
-        document.getElementById('invite-btn').addEventListener('click', () => {
-            const val = document.getElementById('invite-input').value.trim();
-            if (val) {
-                addNotification(`Invite sent to ${val}`);
-                currentTeam.teammate = val;
-                localStorage.setItem('lc_team', JSON.stringify(currentTeam));
-                loadDashboard();
-            }
-        });
-
-        document.getElementById('notify-btn').addEventListener('click', () => {
-            const drop = document.getElementById('notifications-dropdown');
-            drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
         });
 
         const rulesModal = document.getElementById('rules-modal');
