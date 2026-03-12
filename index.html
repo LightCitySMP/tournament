@@ -75,6 +75,7 @@
         /* BRACKET */
         .team-slot { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:6px 10px; font-size:11px; font-weight:500; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-height:28px; width:128px; transition:all 0.15s; }
         .team-slot+.team-slot { margin-top:2px; }
+        .team-slot.filled { color:var(--text); border-color:var(--border2); background:var(--surface2); }
         .team-slot.winner { color:#4ade80; border-color:#16a34a; background:var(--win-bg); font-weight:600; }
         .team-slot.dq { color:#f87171; border-color:#dc2626; background:var(--dq-bg); text-decoration:line-through; opacity:0.75; }
         .team-slot.tbd { color:var(--text3); font-style:italic; font-size:10px; }
@@ -84,6 +85,7 @@
         .dq-tag { font-family:'Anybody',sans-serif; font-size:8px; font-weight:700; background:rgba(220,38,38,0.2); color:#f87171; border-radius:3px; padding:1px 4px; flex-shrink:0; }
 
         .match.finals .team-slot { border-color:var(--gold-dim); background:rgba(240,180,41,0.05); }
+        .match.finals .team-slot.filled { color:var(--gold); border-color:var(--gold); background:rgba(240,180,41,0.1); }
         .match.finals .team-slot.winner { color:#fde68a; border-color:var(--gold); background:rgba(240,180,41,0.15); }
 
         .round-col { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
@@ -220,22 +222,22 @@
 // ================================================================
 const BRACKET_CONFIG = {
     q1: [
-        { team1:"TBD",          team2:"TBD", score1:"",    score2:"",    winner:0, dq1:false, dq2:false }, // Left Match 1
-        { team1:"Ven & Doofy",  team2:"TBD", score1:"",    score2:"",    winner:2, dq1:false, dq2:true  }, // Left Match 2 — team2 DQ'd, Ven & Doofy advance
-        { team1:"TBD",          team2:"TBD", score1:"",    score2:"",    winner:0, dq1:false, dq2:false }, // Right Match 3
-        { team1:"TBD",          team2:"TBD", score1:"",    score2:"",    winner:0, dq1:false, dq2:false }, // Right Match 4
+        { team1:"Ven & Doofy",      team2:"StixxxYMC & 4re5", score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Left Match 1
+        { team1:"TBD",              team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Left Match 2
+        { team1:"Fapyyyh & Lapis",  team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Right Match 3
+        { team1:"TBD",              team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Right Match 4
     ],
     q2w: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Winners LEFT  (W of M1 vs W of M2)
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Winners RIGHT (W of M3 vs W of M4)
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
     ],
     q2l: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Losers LEFT  (L of M1 vs L of M2)
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Losers RIGHT (L of M3 vs L of M4)
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
     ],
     qf: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF LEFT
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF RIGHT
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
     ],
     sf: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
     gf: { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false },
@@ -272,7 +274,7 @@ function buildBracket() {
 
     function slot(name, score, isWinner, isDQ) {
         const isTbd = !name||name==='TBD';
-        let cls = isTbd?'tbd':'';
+        let cls = isTbd ? 'tbd' : 'filled';
         if (isDQ) cls='dq';
         else if (isWinner) cls='winner';
         return `<div class="team-slot ${cls}">
