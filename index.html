@@ -201,7 +201,7 @@
 //  BRACKET CONFIG
 //
 //  FLOW (8 teams):
-//    Q1  — 4 matches, teams fight (left: q1[0], q1[1] / right: q1[2], q1[3])
+//    Q1  — 4 matches (left: q1[0], q1[1] / right: q1[2], q1[3])
 //    Q2W — winners of Q1 fight each other  (left: q2w[0] / right: q2w[1])
 //    Q2L — losers  of Q1 fight each other  (left: q2l[0] / right: q2l[1])
 //    QF  — Q2W winner vs Q2L winner        (left: qf[0]  / right: qf[1])
@@ -220,10 +220,10 @@
 // ================================================================
 const BRACKET_CONFIG = {
     q1: [
-        { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:true, dq2:false }, // Left Match 1
-        { team1:"Ven & Doofy", team2:"TBD", score1:"0-3", score2:"6-7", winner:Sam, dq1:false, dq2:true }, // Left Match 2
-        { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Right Match 3
-        { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Right Match 4
+        { team1:"TBD",          team2:"TBD", score1:"",    score2:"",    winner:0, dq1:false, dq2:false }, // Left Match 1
+        { team1:"Ven & Doofy",  team2:"TBD", score1:"",    score2:"",    winner:2, dq1:false, dq2:true  }, // Left Match 2 — team2 DQ'd, Ven & Doofy advance
+        { team1:"TBD",          team2:"TBD", score1:"",    score2:"",    winner:0, dq1:false, dq2:false }, // Right Match 3
+        { team1:"TBD",          team2:"TBD", score1:"",    score2:"",    winner:0, dq1:false, dq2:false }, // Right Match 4
     ],
     q2w: [
         { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Winners LEFT  (W of M1 vs W of M2)
@@ -234,8 +234,8 @@ const BRACKET_CONFIG = {
         { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Losers RIGHT (L of M3 vs L of M4)
     ],
     qf: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF LEFT  (Q2W-L winner vs Q2L-L winner)
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF RIGHT (Q2W-R winner vs Q2L-R winner)
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF LEFT
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF RIGHT
     ],
     sf: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
     gf: { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false },
@@ -254,7 +254,6 @@ function lose(m, t1, t2) {
 function buildBracket() {
     const { q1, q2w, q2l, qf, sf, gf } = BRACKET_CONFIG;
 
-    // Derive Q2 teams from Q1 results
     const q2wT = [
         [adv(q1[0],q1[0].team1,q1[0].team2), adv(q1[1],q1[1].team1,q1[1].team2)],
         [adv(q1[2],q1[2].team1,q1[2].team2), adv(q1[3],q1[3].team1,q1[3].team2)],
@@ -263,17 +262,11 @@ function buildBracket() {
         [lose(q1[0],q1[0].team1,q1[0].team2), lose(q1[1],q1[1].team1,q1[1].team2)],
         [lose(q1[2],q1[2].team1,q1[2].team2), lose(q1[3],q1[3].team1,q1[3].team2)],
     ];
-
-    // Derive QF teams from Q2 results
     const qfT = [
         [adv(q2w[0],q2wT[0][0],q2wT[0][1]), adv(q2l[0],q2lT[0][0],q2lT[0][1])],
         [adv(q2w[1],q2wT[1][0],q2wT[1][1]), adv(q2l[1],q2lT[1][0],q2lT[1][1])],
     ];
-
-    // Derive SF teams from QF results
     const sfT = [adv(qf[0],qfT[0][0],qfT[0][1]), adv(qf[1],qfT[1][0],qfT[1][1])];
-
-    // GF uses config directly (set team1/team2 manually or derive from sf)
     const gfTeam1 = adv(sf,sfT[0],sfT[1]) || gf.team1;
     const gfTeam2 = gf.team2;
 
@@ -314,12 +307,11 @@ function buildBracket() {
         </svg>`;
     }
 
-    // Layout
     const MH=58, GSM=8, GLG=56, LH=29;
-    const PAIR_H = MH+GSM+MH;               // 124
-    const Q2_FULL = MH+GLG+MH;              // 172
-    const Q2_OFF  = PAIR_H/2-MH/2;          // 33
-    const QF_OFF  = Q2_FULL/2-MH/2;         // 57
+    const PAIR_H  = MH+GSM+MH;
+    const Q2_FULL = MH+GLG+MH;
+    const Q2_OFF  = PAIR_H/2-MH/2;
+    const QF_OFF  = Q2_FULL/2-MH/2;
     const SF_TOP  = QF_OFF-19;
 
     document.getElementById('bracket-root').innerHTML = `
