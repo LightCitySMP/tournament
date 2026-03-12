@@ -64,8 +64,7 @@
         .rule-item:hover { border-color:var(--border2); }
         .rule-num { font-family:'Anybody',sans-serif; font-size:11px; font-weight:700; color:var(--text3); min-width:20px; margin-top:1px; }
         .rule-item strong { color:var(--text); }
-        /* BRACKET */
-        .team-slot { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:6px 10px; font-size:11px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-height:28px; width:140px; transition:all 0.15s; }
+        .team-slot { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:6px 10px; font-size:11px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-height:28px; width:148px; transition:all 0.15s; }
         .team-slot+.team-slot { margin-top:2px; }
         .team-slot.tbd { color:var(--text3); font-style:italic; font-size:10px; }
         .team-slot.filled { color:var(--text); border-color:var(--border2); background:var(--surface2); }
@@ -185,48 +184,27 @@
 
 <script>
 // ================================================================
-//  BRACKET CONFIG — 8 teams total, 4 per side
+//  BRACKET CONFIG — 8 teams, 4 per side, 2 matches per side in Q1
 //
-//  STRUCTURE:
-//    Q1  — 2 matches per side (4 teams per side)
-//           Left:  q1L[0] and q1L[1]
-//           Right: q1R[0] and q1R[1]
-//
-//    Q2W — winners of Q1 fight each other
-//           Left:  q2wL  (winner of q1L[0] vs winner of q1L[1])
-//           Right: q2wR  (winner of q1R[0] vs winner of q1R[1])
-//
-//    Q2L — losers of Q1 fight each other (last chance)
-//           Left:  q2lL  (loser of q1L[0] vs loser of q1L[1])
-//           Right: q2lR  (loser of q1R[0] vs loser of q1R[1])
-//
-//    QF  — Q2W winner vs Q2L winner
-//           Left:  qfL
-//           Right: qfR
-//
+//  FLOW:
+//    Q1  — 2 matches per side
+//    Q2W — winners of Q1[0] vs Q1[1] per side
+//    Q2L — losers  of Q1[0] vs Q1[1] per side
+//    QF  — Q2W winner vs Q2L winner per side
 //    SF  — QF left winner vs QF right winner
 //    GF  — Grand Final
 //
-//  FIELDS:
-//    team1, team2   — team name ("TBD" for empty)
-//    score1, score2 — e.g. "2", or "" to hide
-//    winner         — 0=pending | 1=team1 won | 2=team2 won
-//    dq1, dq2       — true = disqualified
-//
-//  ADD TEAM:    "TBD" → "TeamName"
-//  REMOVE TEAM: name → "TBD", scores → "", winner → 0
-//  DISQUALIFY:  dq1 or dq2 → true
+//  winner: 0=pending | 1=team1 won | 2=team2 won
+//  dq1/dq2: true = disqualified
 // ================================================================
 const BRACKET_CONFIG = {
-    // LEFT SIDE — 2 matches, 4 teams
     q1L: [
-        { team1:"Ven & Doofy",     team2:"StixxxYMC & 4re5", score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
+        { team1:"StixxxYMC & 4re5", team2:"Ven & Doofy",            score1:"", score2:"", winner:0, dq1:false, dq2:false },
+        { team1:"TBD",              team2:"TBD",                     score1:"", score2:"", winner:0, dq1:false, dq2:false },
     ],
-    // RIGHT SIDE — 2 matches, 4 teams
     q1R: [
-        { team1:"Fapyyyh & Lapis", team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
+        { team1:"Fapyyyh & Lapis",  team2:"erwamu_ & cihanby",       score1:"", score2:"", winner:0, dq1:false, dq2:false },
+        { team1:"blvckwoooolf & critical", team2:"Cl0ud2rs & NotPlushiexd", score1:"", score2:"", winner:0, dq1:false, dq2:false },
     ],
     q2wL: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
     q2wR: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
@@ -251,20 +229,14 @@ function lose(m, t1, t2) {
 function buildBracket() {
     const C = BRACKET_CONFIG;
 
-    // Q2 teams
     const q2wLt = [adv(C.q1L[0],C.q1L[0].team1,C.q1L[0].team2), adv(C.q1L[1],C.q1L[1].team1,C.q1L[1].team2)];
     const q2lLt = [lose(C.q1L[0],C.q1L[0].team1,C.q1L[0].team2), lose(C.q1L[1],C.q1L[1].team1,C.q1L[1].team2)];
     const q2wRt = [adv(C.q1R[0],C.q1R[0].team1,C.q1R[0].team2), adv(C.q1R[1],C.q1R[1].team1,C.q1R[1].team2)];
     const q2lRt = [lose(C.q1R[0],C.q1R[0].team1,C.q1R[0].team2), lose(C.q1R[1],C.q1R[1].team1,C.q1R[1].team2)];
 
-    // QF teams
     const qfLt = [adv(C.q2wL,q2wLt[0],q2wLt[1]), adv(C.q2lL,q2lLt[0],q2lLt[1])];
     const qfRt = [adv(C.q2wR,q2wRt[0],q2wRt[1]), adv(C.q2lR,q2lRt[0],q2lRt[1])];
-
-    // SF teams
-    const sfT = [adv(C.qfL,qfLt[0],qfLt[1]), adv(C.qfR,qfRt[0],qfRt[1])];
-
-    // GF teams
+    const sfT  = [adv(C.qfL,qfLt[0],qfLt[1]), adv(C.qfR,qfRt[0],qfRt[1])];
     const gfT1 = adv(C.sf,sfT[0],sfT[1]) || C.gf.team1;
     const gfT2 = C.gf.team2;
 
@@ -305,44 +277,17 @@ function buildBracket() {
         </svg>`;
     }
 
-    // Layout
-    // Q1: 2 matches per side with a gap between them
-    // Each match = 58px tall. Gap between Q1 matches = GLG.
-    // Q2W sits opposite match 0, Q2L sits opposite match 1.
-    // QF sits centered between Q2W and Q2L.
-    const MH  = 58;   // match height
-    const GSM = 8;    // gap between two slots inside a match (already baked into MH)
-    const GLG = 64;   // gap between Q1[0] and Q1[1], and between Q2W and Q2L
-    const LH  = 29;   // round label height + margin
-
-    // Q1 col total height = MH + GLG + MH = 180
-    const Q1_H = MH + GLG + MH;  // 180
-
-    // Q2W and Q2L each need to align with the center of their respective Q1 match
-    // Q2W center = MH/2 = 29 from top of Q1 col
-    // Q2L center = MH + GLG + MH/2 = 151 from top of Q1 col
-    // Q2 col spans Q1_H = 180, Q2W at top (no extra offset), Q2L at MH+GLG from top
-    const Q2W_TOP = 0;
-    const Q2L_TOP = MH + GLG;   // 122 — Q2L starts here within Q2 col
-
-    // Connector from Q1 → Q2: merges 2 Q1 matches into 1 Q2 match each
-    // But they're separate connectors — one per match (straight line, not merge)
-    // Actually Q2W gets winner of Q1[0] AND Q1[1], so it IS a merge of 2 inputs
-    // Merge connector height = Q1_H = 180, spanning both Q1 matches
-
-    // QF sits at center of Q2 col = Q1_H/2 - MH/2 = 61 from top
-    const QF_TOP = Q1_H/2 - MH/2;  // 61
-
-    // Merge connector Q2→QF spans from Q2W top to Q2L bottom = Q1_H
-    // QF is centered on Q1_H
-
-    // SF sits at center of QF col, same vertical position
+    const MH  = 58;
+    const GLG = 64;
+    const LH  = 29;
+    const Q1_H = MH + GLG + MH;   // 180
+    const QF_TOP = Q1_H/2 - MH/2; // 61
     const SF_TOP = QF_TOP - 19;
 
     document.getElementById('bracket-root').innerHTML = `
 <div style="display:flex;align-items:flex-start;justify-content:center;gap:0;min-width:900px;">
 
-  <!-- Q1 LEFT (2 matches, 4 teams) -->
+  <!-- Q1 LEFT -->
   <div class="round-col">
     <div class="round-label">Round 1</div>
     <div style="display:flex;flex-direction:column;gap:${GLG}px;">
@@ -351,12 +296,9 @@ function buildBracket() {
     </div>
   </div>
 
-  <!-- CONN Q1L → Q2W and Q2L -->
-  <div style="margin-top:${LH}px; display:flex; flex-direction:column; gap:${GLG}px;">
-    <!-- line from Q1L[0] to Q2W -->
-    ${svgLine(24)}
-    <!-- line from Q1L[1] to Q2L -->
-    ${svgLine(24)}
+  <!-- CONN Q1L → Q2L -->
+  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
+    ${svgLine(24)}${svgLine(24)}
   </div>
 
   <!-- Q2 LEFT -->
@@ -374,7 +316,7 @@ function buildBracket() {
     </div>
   </div>
 
-  <!-- CONN Q2L → QFL (merge Q2W and Q2L into QF) -->
+  <!-- CONN Q2L → QFL -->
   <div style="margin-top:${LH}px;">
     ${svgMerge('left', Q1_H + 19)}
   </div>
@@ -429,13 +371,12 @@ function buildBracket() {
     </div>
   </div>
 
-  <!-- CONN Q1R → Q2R -->
-  <div style="margin-top:${LH}px; display:flex; flex-direction:column; gap:${GLG}px;">
-    ${svgLine(24)}
-    ${svgLine(24)}
+  <!-- CONN Q2R → Q1R -->
+  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
+    ${svgLine(24)}${svgLine(24)}
   </div>
 
-  <!-- Q1 RIGHT (2 matches, 4 teams) -->
+  <!-- Q1 RIGHT -->
   <div class="round-col">
     <div class="round-label">Round 1</div>
     <div style="display:flex;flex-direction:column;gap:${GLG}px;">
