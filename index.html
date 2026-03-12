@@ -37,11 +37,11 @@
         .logo { font-family:'Anybody',sans-serif; font-weight:900; font-size:18px; letter-spacing:0.05em; color:var(--text); }
         .logo span { color:var(--accent2); }
         .nav-tabs { display:flex; gap:4px; }
-        .nav-tab { background:transparent; border:none; color:var(--text3); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; padding:7px 16px; border-radius:6px; cursor:pointer; transition:all 0.2s; letter-spacing:0.02em; }
+        .nav-tab { background:transparent; border:none; color:var(--text3); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; padding:7px 16px; border-radius:6px; cursor:pointer; transition:all 0.2s; }
         .nav-tab:hover { color:var(--text2); background:var(--surface); }
         .nav-tab.active { color:var(--accent2); background:rgba(37,99,235,0.12); }
         .nav-badge { display:inline-block; background:var(--gold); color:#0a0c10; font-family:'Anybody',sans-serif; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
-        main { position:relative; z-index:1; max-width:1600px; margin:0 auto; padding:0 24px 80px; }
+        main { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:0 24px 80px; }
         .hero { text-align:center; padding:64px 0 48px; }
         .hero-eyebrow { font-family:'Anybody',sans-serif; font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent2); margin-bottom:14px; }
         .hero h1 { font-family:'Anybody',sans-serif; font-size:clamp(36px,6vw,64px); font-weight:900; line-height:1.05; letter-spacing:-0.02em; background:linear-gradient(135deg,#e2eeff 0%,#93bbf7 50%,var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:10px; }
@@ -64,12 +64,13 @@
         .rule-item:hover { border-color:var(--border2); }
         .rule-num { font-family:'Anybody',sans-serif; font-size:11px; font-weight:700; color:var(--text3); min-width:20px; margin-top:1px; }
         .rule-item strong { color:var(--text); }
-        .team-slot { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:6px 10px; font-size:11px; font-weight:500; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-height:28px; width:140px; transition:all 0.15s; }
+        /* BRACKET */
+        .team-slot { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:6px 10px; font-size:11px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-height:28px; width:140px; transition:all 0.15s; }
         .team-slot+.team-slot { margin-top:2px; }
+        .team-slot.tbd { color:var(--text3); font-style:italic; font-size:10px; }
         .team-slot.filled { color:var(--text); border-color:var(--border2); background:var(--surface2); }
         .team-slot.winner { color:#4ade80; border-color:#16a34a; background:var(--win-bg); font-weight:600; }
         .team-slot.dq { color:#f87171; border-color:#dc2626; background:var(--dq-bg); text-decoration:line-through; opacity:0.75; }
-        .team-slot.tbd { color:var(--text3); font-style:italic; font-size:10px; }
         .team-name { flex:1; overflow:hidden; text-overflow:ellipsis; }
         .team-score { font-family:'Anybody',sans-serif; font-size:11px; font-weight:700; color:var(--text3); flex-shrink:0; }
         .team-slot.winner .team-score { color:#4ade80; }
@@ -166,7 +167,7 @@
 
     <section id="bracket" class="section">
         <div class="panel">
-            <div class="panel-header"><div class="panel-icon">🏆</div><h2>Tournament Bracket — 2v2 · 16 Teams</h2></div>
+            <div class="panel-header"><div class="panel-icon">🏆</div><h2>Tournament Bracket — 2v2 · 8 Teams</h2></div>
             <div class="panel-body">
                 <div class="bracket-legend">
                     <div class="legend-item"><div class="legend-dot l-tbd"></div>TBD / Empty</div>
@@ -184,14 +185,25 @@
 
 <script>
 // ================================================================
-//  BRACKET CONFIG — 16 teams total, 8 per side
+//  BRACKET CONFIG — 8 teams total, 4 per side
 //
-//  FLOW:
-//    Q1  — 8 matches total (L: q1L[0..3] / R: q1R[0..3])
-//           each side has 4 matches = 8 teams per side
-//    Q2W — winners of Q1 fight each other (L: q2wL[0..1] / R: q2wR[0..1])
-//    Q2L — losers  of Q1 fight each other (L: q2lL[0..1] / R: q2lR[0..1])
-//    QF  — Q2W winner vs Q2L winner       (L: qfL / R: qfR)
+//  STRUCTURE:
+//    Q1  — 2 matches per side (4 teams per side)
+//           Left:  q1L[0] and q1L[1]
+//           Right: q1R[0] and q1R[1]
+//
+//    Q2W — winners of Q1 fight each other
+//           Left:  q2wL  (winner of q1L[0] vs winner of q1L[1])
+//           Right: q2wR  (winner of q1R[0] vs winner of q1R[1])
+//
+//    Q2L — losers of Q1 fight each other (last chance)
+//           Left:  q2lL  (loser of q1L[0] vs loser of q1L[1])
+//           Right: q2lR  (loser of q1R[0] vs loser of q1R[1])
+//
+//    QF  — Q2W winner vs Q2L winner
+//           Left:  qfL
+//           Right: qfR
+//
 //    SF  — QF left winner vs QF right winner
 //    GF  — Grand Final
 //
@@ -200,46 +212,30 @@
 //    score1, score2 — e.g. "2", or "" to hide
 //    winner         — 0=pending | 1=team1 won | 2=team2 won
 //    dq1, dq2       — true = disqualified
+//
+//  ADD TEAM:    "TBD" → "TeamName"
+//  REMOVE TEAM: name → "TBD", scores → "", winner → 0
+//  DISQUALIFY:  dq1 or dq2 → true
 // ================================================================
 const BRACKET_CONFIG = {
-    // LEFT SIDE — 4 matches, 8 teams
+    // LEFT SIDE — 2 matches, 4 teams
     q1L: [
         { team1:"Ven & Doofy",     team2:"StixxxYMC & 4re5", score1:"", score2:"", winner:0, dq1:false, dq2:false },
         { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
     ],
-    // RIGHT SIDE — 4 matches, 8 teams
+    // RIGHT SIDE — 2 matches, 4 teams
     q1R: [
         { team1:"Fapyyyh & Lapis", team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
         { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"TBD",             team2:"TBD",               score1:"", score2:"", winner:0, dq1:false, dq2:false },
     ],
-    // Q2 Winners — 2 matches per side (W of Q1[0] vs W of Q1[1], W of Q1[2] vs W of Q1[3])
-    q2wL: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    ],
-    q2wR: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    ],
-    // Q2 Losers — 2 matches per side
-    q2lL: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    ],
-    q2lR: [
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    ],
-    // QF — 1 match per side (Q2W winner vs Q2L winner)
-    qfL: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    qfR: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    // SF and GF
-    sf: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    gf: { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    q2wL: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    q2wR: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    q2lL: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    q2lR: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    qfL:  { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    qfR:  { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    sf:   { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    gf:   { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false },
 };
 // ================================================================
 
@@ -253,50 +249,28 @@ function lose(m, t1, t2) {
 }
 
 function buildBracket() {
-    const { q1L, q1R, q2wL, q2wR, q2lL, q2lR, qfL, qfR, sf, gf } = BRACKET_CONFIG;
+    const C = BRACKET_CONFIG;
 
-    // Q2 Winners teams — LEFT
-    const q2wLT = [
-        [adv(q1L[0],q1L[0].team1,q1L[0].team2), adv(q1L[1],q1L[1].team1,q1L[1].team2)],
-        [adv(q1L[2],q1L[2].team1,q1L[2].team2), adv(q1L[3],q1L[3].team1,q1L[3].team2)],
-    ];
-    // Q2 Losers teams — LEFT
-    const q2lLT = [
-        [lose(q1L[0],q1L[0].team1,q1L[0].team2), lose(q1L[1],q1L[1].team1,q1L[1].team2)],
-        [lose(q1L[2],q1L[2].team1,q1L[2].team2), lose(q1L[3],q1L[3].team1,q1L[3].team2)],
-    ];
-    // Q2 Winners teams — RIGHT
-    const q2wRT = [
-        [adv(q1R[0],q1R[0].team1,q1R[0].team2), adv(q1R[1],q1R[1].team1,q1R[1].team2)],
-        [adv(q1R[2],q1R[2].team1,q1R[2].team2), adv(q1R[3],q1R[3].team1,q1R[3].team2)],
-    ];
-    // Q2 Losers teams — RIGHT
-    const q2lRT = [
-        [lose(q1R[0],q1R[0].team1,q1R[0].team2), lose(q1R[1],q1R[1].team1,q1R[1].team2)],
-        [lose(q1R[2],q1R[2].team1,q1R[2].team2), lose(q1R[3],q1R[3].team1,q1R[3].team2)],
-    ];
+    // Q2 teams
+    const q2wLt = [adv(C.q1L[0],C.q1L[0].team1,C.q1L[0].team2), adv(C.q1L[1],C.q1L[1].team1,C.q1L[1].team2)];
+    const q2lLt = [lose(C.q1L[0],C.q1L[0].team1,C.q1L[0].team2), lose(C.q1L[1],C.q1L[1].team1,C.q1L[1].team2)];
+    const q2wRt = [adv(C.q1R[0],C.q1R[0].team1,C.q1R[0].team2), adv(C.q1R[1],C.q1R[1].team1,C.q1R[1].team2)];
+    const q2lRt = [lose(C.q1R[0],C.q1R[0].team1,C.q1R[0].team2), lose(C.q1R[1],C.q1R[1].team1,C.q1R[1].team2)];
 
-    // QF teams — Q2W winner vs Q2L winner, per side
-    // Left QF: winner of q2wL[0] vs q2wL[1] faces winner of q2lL[0] vs q2lL[1]
-    const qfLT = [
-        adv(q2wL[0],q2wLT[0][0],q2wLT[0][1]) || adv(q2wL[1],q2wLT[1][0],q2wLT[1][1]),
-        adv(q2lL[0],q2lLT[0][0],q2lLT[0][1]) || adv(q2lL[1],q2lLT[1][0],q2lLT[1][1]),
-    ];
-    const qfRT = [
-        adv(q2wR[0],q2wRT[0][0],q2wRT[0][1]) || adv(q2wR[1],q2wRT[1][0],q2wRT[1][1]),
-        adv(q2lR[0],q2lRT[0][0],q2lRT[0][1]) || adv(q2lR[1],q2lRT[1][0],q2lRT[1][1]),
-    ];
+    // QF teams
+    const qfLt = [adv(C.q2wL,q2wLt[0],q2wLt[1]), adv(C.q2lL,q2lLt[0],q2lLt[1])];
+    const qfRt = [adv(C.q2wR,q2wRt[0],q2wRt[1]), adv(C.q2lR,q2lRt[0],q2lRt[1])];
 
     // SF teams
-    const sfT = [adv(qfL,qfLT[0],qfLT[1]), adv(qfR,qfRT[0],qfRT[1])];
+    const sfT = [adv(C.qfL,qfLt[0],qfLt[1]), adv(C.qfR,qfRt[0],qfRt[1])];
 
     // GF teams
-    const gfTeam1 = adv(sf,sfT[0],sfT[1]) || gf.team1;
-    const gfTeam2 = gf.team2;
+    const gfT1 = adv(C.sf,sfT[0],sfT[1]) || C.gf.team1;
+    const gfT2 = C.gf.team2;
 
     function slot(name, score, isWinner, isDQ) {
         const isTbd = !name||name==='TBD';
-        let cls = isTbd ? 'tbd' : 'filled';
+        let cls = isTbd?'tbd':'filled';
         if (isDQ) cls='dq';
         else if (isWinner) cls='winner';
         return `<div class="team-slot ${cls}">
@@ -313,7 +287,7 @@ function buildBracket() {
     }
 
     function svgMerge(dir,h) {
-        const mid=h/2,q1y=h*.25,q3y=h*.75;
+        const mid=h/2, q1y=h*.25, q3y=h*.75;
         return dir==='left'
             ?`<svg width="28" height="${h}" style="overflow:visible;flex-shrink:0;display:block;">
                 <polyline points="0,${q1y} 14,${q1y} 14,${mid} 28,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
@@ -331,158 +305,142 @@ function buildBracket() {
         </svg>`;
     }
 
-    // Layout constants
-    const MH   = 58;   // match height
-    const GSM  = 8;    // small gap between matches in a pair
-    const GLG  = 44;   // large gap between pairs / between winners and losers
-    const LH   = 29;   // label height
+    // Layout
+    // Q1: 2 matches per side with a gap between them
+    // Each match = 58px tall. Gap between Q1 matches = GLG.
+    // Q2W sits opposite match 0, Q2L sits opposite match 1.
+    // QF sits centered between Q2W and Q2L.
+    const MH  = 58;   // match height
+    const GSM = 8;    // gap between two slots inside a match (already baked into MH)
+    const GLG = 64;   // gap between Q1[0] and Q1[1], and between Q2W and Q2L
+    const LH  = 29;   // round label height + margin
 
-    // Q1: 4 matches in 2 pairs → pair height = MH+GSM+MH = 124, total Q1 col = 2*PAIR + GLG = 124+44+124 = 292
-    const PAIR_H = MH + GSM + MH;           // 124
-    const Q1_H   = PAIR_H + GLG + PAIR_H;   // 292
+    // Q1 col total height = MH + GLG + MH = 180
+    const Q1_H = MH + GLG + MH;  // 180
 
-    // Q2: 2 winners matches + gap + 2 losers matches, each match needs to align with center of its Q1 pair
-    const Q2_OFF  = PAIR_H/2 - MH/2;        // 33 — offset within each pair half
-    // Q2 col total span = Q1_H (same as Q1 col since they share the same vertical space)
+    // Q2W and Q2L each need to align with the center of their respective Q1 match
+    // Q2W center = MH/2 = 29 from top of Q1 col
+    // Q2L center = MH + GLG + MH/2 = 151 from top of Q1 col
+    // Q2 col spans Q1_H = 180, Q2W at top (no extra offset), Q2L at MH+GLG from top
+    const Q2W_TOP = 0;
+    const Q2L_TOP = MH + GLG;   // 122 — Q2L starts here within Q2 col
 
-    // QF: 1 match, needs to sit at center of Q2 col
-    // Q2 col has winners block at top (offset Q2_OFF from top of pair1) and losers block at bottom
-    // Center of Q2 col ≈ Q1_H/2
-    const QF_OFF = Q1_H/2 - MH/2;          // 117
+    // Connector from Q1 → Q2: merges 2 Q1 matches into 1 Q2 match each
+    // But they're separate connectors — one per match (straight line, not merge)
+    // Actually Q2W gets winner of Q1[0] AND Q1[1], so it IS a merge of 2 inputs
+    // Merge connector height = Q1_H = 180, spanning both Q1 matches
 
-    // SF sits at center of QF col
-    const SF_TOP = QF_OFF - 19;
+    // QF sits at center of Q2 col = Q1_H/2 - MH/2 = 61 from top
+    const QF_TOP = Q1_H/2 - MH/2;  // 61
+
+    // Merge connector Q2→QF spans from Q2W top to Q2L bottom = Q1_H
+    // QF is centered on Q1_H
+
+    // SF sits at center of QF col, same vertical position
+    const SF_TOP = QF_TOP - 19;
 
     document.getElementById('bracket-root').innerHTML = `
-<div style="display:flex;align-items:flex-start;justify-content:center;gap:0;min-width:1400px;">
+<div style="display:flex;align-items:flex-start;justify-content:center;gap:0;min-width:900px;">
 
-  <!-- ═══════════════ LEFT SIDE ═══════════════ -->
-
-  <!-- Q1 LEFT -->
+  <!-- Q1 LEFT (2 matches, 4 teams) -->
   <div class="round-col">
     <div class="round-label">Round 1</div>
     <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
-        ${mtch(q1L[0].team1,q1L[0].team2,q1L[0].score1,q1L[0].score2,q1L[0].winner,q1L[0].dq1,q1L[0].dq2)}
-        ${mtch(q1L[1].team1,q1L[1].team2,q1L[1].score1,q1L[1].score2,q1L[1].winner,q1L[1].dq1,q1L[1].dq2)}
-      </div>
-      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
-        ${mtch(q1L[2].team1,q1L[2].team2,q1L[2].score1,q1L[2].score2,q1L[2].winner,q1L[2].dq1,q1L[2].dq2)}
-        ${mtch(q1L[3].team1,q1L[3].team2,q1L[3].score1,q1L[3].score2,q1L[3].winner,q1L[3].dq1,q1L[3].dq2)}
-      </div>
+      ${mtch(C.q1L[0].team1,C.q1L[0].team2,C.q1L[0].score1,C.q1L[0].score2,C.q1L[0].winner,C.q1L[0].dq1,C.q1L[0].dq2)}
+      ${mtch(C.q1L[1].team1,C.q1L[1].team2,C.q1L[1].score1,C.q1L[1].score2,C.q1L[1].winner,C.q1L[1].dq1,C.q1L[1].dq2)}
     </div>
   </div>
 
-  <!-- CONN Q1L → Q2L -->
-  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
-    ${svgMerge('left',PAIR_H)}
-    ${svgMerge('left',PAIR_H)}
+  <!-- CONN Q1L → Q2W and Q2L -->
+  <div style="margin-top:${LH}px; display:flex; flex-direction:column; gap:${GLG}px;">
+    <!-- line from Q1L[0] to Q2W -->
+    ${svgLine(24)}
+    <!-- line from Q1L[1] to Q2L -->
+    ${svgLine(24)}
   </div>
 
   <!-- Q2 LEFT -->
   <div class="round-col">
     <div class="round-label">Round 2</div>
     <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      <div style="margin-top:${Q2_OFF}px;">
+      <div>
         <div class="round-tag winners">WINNERS</div>
-        ${mtch(q2wLT[0][0],q2wLT[0][1],q2wL[0].score1,q2wL[0].score2,q2wL[0].winner,q2wL[0].dq1,q2wL[0].dq2)}
+        ${mtch(q2wLt[0],q2wLt[1],C.q2wL.score1,C.q2wL.score2,C.q2wL.winner,C.q2wL.dq1,C.q2wL.dq2)}
       </div>
-      <div style="margin-top:0px;">
-        <div class="round-tag winners">WINNERS</div>
-        ${mtch(q2wLT[1][0],q2wLT[1][1],q2wL[1].score1,q2wL[1].score2,q2wL[1].winner,q2wL[1].dq1,q2wL[1].dq2)}
-      </div>
-      <div style="margin-top:0px;">
+      <div>
         <div class="round-tag losers">LOSERS</div>
-        ${mtch(q2lLT[0][0],q2lLT[0][1],q2lL[0].score1,q2lL[0].score2,q2lL[0].winner,q2lL[0].dq1,q2lL[0].dq2)}
-      </div>
-      <div style="margin-top:0px;">
-        <div class="round-tag losers">LOSERS</div>
-        ${mtch(q2lLT[1][0],q2lLT[1][1],q2lL[1].score1,q2lL[1].score2,q2lL[1].winner,q2lL[1].dq1,q2lL[1].dq2)}
+        ${mtch(q2lLt[0],q2lLt[1],C.q2lL.score1,C.q2lL.score2,C.q2lL.winner,C.q2lL.dq1,C.q2lL.dq2)}
       </div>
     </div>
   </div>
 
-  <!-- CONN Q2L → QFL -->
-  <div style="margin-top:${LH + Q2_OFF + 11}px;">
-    ${svgMerge('left', PAIR_H + GLG + PAIR_H + GLG - Q2_OFF*2 - 22)}
+  <!-- CONN Q2L → QFL (merge Q2W and Q2L into QF) -->
+  <div style="margin-top:${LH}px;">
+    ${svgMerge('left', Q1_H + 19)}
   </div>
 
   <!-- QF LEFT -->
-  <div class="round-col" style="margin-top:${QF_OFF}px;">
+  <div class="round-col" style="margin-top:${QF_TOP}px;">
     <div class="round-label">Quarterfinal</div>
-    ${mtch(qfLT[0],qfLT[1],qfL.score1,qfL.score2,qfL.winner,qfL.dq1,qfL.dq2)}
+    ${mtch(qfLt[0],qfLt[1],C.qfL.score1,C.qfL.score2,C.qfL.winner,C.qfL.dq1,C.qfL.dq2)}
   </div>
 
   <!-- CONN QFL → SF -->
-  <div style="margin-top:${QF_OFF+LH+MH/2-14}px;">${svgLine(24)}</div>
+  <div style="margin-top:${QF_TOP+LH+MH/2-14}px;">${svgLine(28)}</div>
 
-  <!-- ═══════════════ CENTER: SF + GF ═══════════════ -->
+  <!-- SF + GF CENTER -->
   <div style="display:flex;flex-direction:column;align-items:center;margin-top:${SF_TOP}px;">
     <div class="round-label">Semifinal</div>
-    ${mtch(sfT[0],sfT[1],sf.score1,sf.score2,sf.winner,sf.dq1,sf.dq2)}
+    ${mtch(sfT[0],sfT[1],C.sf.score1,C.sf.score2,C.sf.winner,C.sf.dq1,C.sf.dq2)}
     <svg width="2" height="20" style="display:block;margin:8px auto 0;">
       <line x1="1" y1="0" x2="1" y2="20" stroke="#243345" stroke-width="1.5"/>
     </svg>
     <div class="round-label" style="color:var(--gold);margin-top:8px;">Grand Final</div>
     <div class="finals-crown">🏆</div>
-    ${mtch(gfTeam1,gfTeam2,gf.score1,gf.score2,gf.winner,gf.dq1,gf.dq2,true)}
+    ${mtch(gfT1,gfT2,C.gf.score1,C.gf.score2,C.gf.winner,C.gf.dq1,C.gf.dq2,true)}
   </div>
 
   <!-- CONN SF → QFR -->
-  <div style="margin-top:${QF_OFF+LH+MH/2-14}px;">${svgLine(24)}</div>
+  <div style="margin-top:${QF_TOP+LH+MH/2-14}px;">${svgLine(28)}</div>
 
   <!-- QF RIGHT -->
-  <div class="round-col" style="margin-top:${QF_OFF}px;">
+  <div class="round-col" style="margin-top:${QF_TOP}px;">
     <div class="round-label">Quarterfinal</div>
-    ${mtch(qfRT[0],qfRT[1],qfR.score1,qfR.score2,qfR.winner,qfR.dq1,qfR.dq2)}
+    ${mtch(qfRt[0],qfRt[1],C.qfR.score1,C.qfR.score2,C.qfR.winner,C.qfR.dq1,C.qfR.dq2)}
   </div>
 
   <!-- CONN QFR → Q2R -->
-  <div style="margin-top:${LH + Q2_OFF + 11}px;">
-    ${svgMerge('right', PAIR_H + GLG + PAIR_H + GLG - Q2_OFF*2 - 22)}
+  <div style="margin-top:${LH}px;">
+    ${svgMerge('right', Q1_H + 19)}
   </div>
 
   <!-- Q2 RIGHT -->
   <div class="round-col">
     <div class="round-label">Round 2</div>
     <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      <div style="margin-top:${Q2_OFF}px;">
+      <div>
         <div class="round-tag winners">WINNERS</div>
-        ${mtch(q2wRT[0][0],q2wRT[0][1],q2wR[0].score1,q2wR[0].score2,q2wR[0].winner,q2wR[0].dq1,q2wR[0].dq2)}
+        ${mtch(q2wRt[0],q2wRt[1],C.q2wR.score1,C.q2wR.score2,C.q2wR.winner,C.q2wR.dq1,C.q2wR.dq2)}
       </div>
-      <div style="margin-top:0px;">
-        <div class="round-tag winners">WINNERS</div>
-        ${mtch(q2wRT[1][0],q2wRT[1][1],q2wR[1].score1,q2wR[1].score2,q2wR[1].winner,q2wR[1].dq1,q2wR[1].dq2)}
-      </div>
-      <div style="margin-top:0px;">
+      <div>
         <div class="round-tag losers">LOSERS</div>
-        ${mtch(q2lRT[0][0],q2lRT[0][1],q2lR[0].score1,q2lR[0].score2,q2lR[0].winner,q2lR[0].dq1,q2lR[0].dq2)}
-      </div>
-      <div style="margin-top:0px;">
-        <div class="round-tag losers">LOSERS</div>
-        ${mtch(q2lRT[1][0],q2lRT[1][1],q2lR[1].score1,q2lR[1].score2,q2lR[1].winner,q2lR[1].dq1,q2lR[1].dq2)}
+        ${mtch(q2lRt[0],q2lRt[1],C.q2lR.score1,C.q2lR.score2,C.q2lR.winner,C.q2lR.dq1,C.q2lR.dq2)}
       </div>
     </div>
   </div>
 
-  <!-- CONN Q2R → Q1R -->
-  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
-    ${svgMerge('right',PAIR_H)}
-    ${svgMerge('right',PAIR_H)}
+  <!-- CONN Q1R → Q2R -->
+  <div style="margin-top:${LH}px; display:flex; flex-direction:column; gap:${GLG}px;">
+    ${svgLine(24)}
+    ${svgLine(24)}
   </div>
 
-  <!-- Q1 RIGHT -->
+  <!-- Q1 RIGHT (2 matches, 4 teams) -->
   <div class="round-col">
     <div class="round-label">Round 1</div>
     <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
-        ${mtch(q1R[0].team1,q1R[0].team2,q1R[0].score1,q1R[0].score2,q1R[0].winner,q1R[0].dq1,q1R[0].dq2)}
-        ${mtch(q1R[1].team1,q1R[1].team2,q1R[1].score1,q1R[1].score2,q1R[1].winner,q1R[1].dq1,q1R[1].dq2)}
-      </div>
-      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
-        ${mtch(q1R[2].team1,q1R[2].team2,q1R[2].score1,q1R[2].score2,q1R[2].winner,q1R[2].dq1,q1R[2].dq2)}
-        ${mtch(q1R[3].team1,q1R[3].team2,q1R[3].score1,q1R[3].score2,q1R[3].winner,q1R[3].dq1,q1R[3].dq2)}
-      </div>
+      ${mtch(C.q1R[0].team1,C.q1R[0].team2,C.q1R[0].score1,C.q1R[0].score2,C.q1R[0].winner,C.q1R[0].dq1,C.q1R[0].dq2)}
+      ${mtch(C.q1R[1].team1,C.q1R[1].team2,C.q1R[1].score1,C.q1R[1].score2,C.q1R[1].winner,C.q1R[1].dq1,C.q1R[1].dq2)}
     </div>
   </div>
 
