@@ -294,32 +294,22 @@
 //    sf[0]  + sf[1]     → grandFinal
 // ================================================================
 const BRACKET_CONFIG = {
-
-    ro16: [
-        // ── LEFT SIDE ──────────────────────────────────────────
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R1  → QF1 slot A
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R2  → QF1 slot B
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R3  → QF2 slot A
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R4  → QF2 slot B
-        // ── RIGHT SIDE ─────────────────────────────────────────
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R5  → QF3 slot A
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R6  → QF3 slot B
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R7  → QF4 slot A
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // R8  → QF4 slot B
+    playIn: [
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // PI1 → fills QF3 slot B
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // PI2 → fills QF4 slot B
     ],
-
     qf: [
-        { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF1 — winners of R1 & R2
-        { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF2 — winners of R3 & R4
-        { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF3 — winners of R5 & R6
-        { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF4 — winners of R7 & R8
+        // Left side — fully seeded (bye teams)
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF1 (seed 1 vs seed 6)
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF2 (seed 3 vs seed 4)
+        // Right side — bye teams vs play-in winners
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF3 (seed 2 vs winner of PI1)
+        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF4 (seed 5 vs winner of PI2)
     ],
-
     sf: [
         { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // SF1 — winners of QF1 & QF2
         { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // SF2 — winners of QF3 & QF4
     ],
-
     grandFinal: { score1: "", score2: "", winner: 0, dq1: false, dq2: false },
 };
 // ================================================================
