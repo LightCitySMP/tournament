@@ -8,186 +8,100 @@
     <style>
         :root {
             --bg: #0a0c10;
-            --bg2: #0f1318;
             --bg3: #141920;
             --surface: #161d27;
             --surface2: #1c2533;
             --border: #1e2d3d;
             --border2: #243345;
-            --accent: #2563eb;
             --accent2: #3b82f6;
             --gold: #f0b429;
             --gold-dim: #a07820;
             --text: #d4e0ef;
             --text2: #8aa0b8;
             --text3: #4d6a85;
-            --win-bg: rgba(22, 163, 74, 0.1);
-            --dq-bg: rgba(220, 38, 38, 0.08);
+            --win-bg: rgba(22,163,74,0.1);
+            --dq-bg: rgba(220,38,38,0.08);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px);
-            background-size: 48px 48px;
-            pointer-events: none;
-            z-index: 0;
+            content:''; position:fixed; inset:0;
+            background-image: linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);
+            background-size:48px 48px; pointer-events:none; z-index:0;
         }
 
-        /* LOADING */
-        #loading-screen {
-            position: fixed; inset: 0; background: var(--bg);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 9999; transition: opacity 0.6s ease;
-        }
-        .loader-ring {
-            width: 48px; height: 48px;
-            border: 3px solid var(--border2); border-top-color: var(--accent2);
-            border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 18px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #loading-screen span {
-            font-family: 'Anybody', sans-serif; font-size: 13px;
-            letter-spacing: 0.2em; text-transform: uppercase; color: var(--text3);
-        }
+        #loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.6s ease; }
+        .loader-ring { width:48px; height:48px; border:3px solid var(--border2); border-top-color:var(--accent2); border-radius:50%; animation:spin 0.8s linear infinite; margin-bottom:18px; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        #loading-screen span { font-family:'Anybody',sans-serif; font-size:13px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text3); }
 
-        /* NAVBAR */
-        .navbar {
-            position: relative; z-index: 10;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 48px; height: 64px;
-            background: rgba(10,12,16,0.9); border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(12px);
-        }
-        .logo { font-family: 'Anybody', sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 0.05em; color: var(--text); }
-        .logo span { color: var(--accent2); }
-        .nav-tabs { display: flex; gap: 4px; }
-        .nav-tab {
-            background: transparent; border: none; color: var(--text3);
-            font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-            padding: 7px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em;
-        }
-        .nav-tab:hover { color: var(--text2); background: var(--surface); }
-        .nav-tab.active { color: var(--accent2); background: rgba(37,99,235,0.12); }
-        .nav-badge {
-            display: inline-block; background: var(--gold); color: #0a0c10;
-            font-family: 'Anybody', sans-serif; font-size: 10px; font-weight: 700;
-            padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle;
-        }
+        .navbar { position:relative; z-index:10; display:flex; justify-content:space-between; align-items:center; padding:0 48px; height:64px; background:rgba(10,12,16,0.9); border-bottom:1px solid var(--border); backdrop-filter:blur(12px); }
+        .logo { font-family:'Anybody',sans-serif; font-weight:900; font-size:18px; letter-spacing:0.05em; color:var(--text); }
+        .logo span { color:var(--accent2); }
+        .nav-tabs { display:flex; gap:4px; }
+        .nav-tab { background:transparent; border:none; color:var(--text3); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; padding:7px 16px; border-radius:6px; cursor:pointer; transition:all 0.2s; letter-spacing:0.02em; }
+        .nav-tab:hover { color:var(--text2); background:var(--surface); }
+        .nav-tab.active { color:var(--accent2); background:rgba(37,99,235,0.12); }
+        .nav-badge { display:inline-block; background:var(--gold); color:#0a0c10; font-family:'Anybody',sans-serif; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
 
-        main { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 24px 80px; }
+        main { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:0 24px 80px; }
 
-        /* HERO */
-        .hero { text-align: center; padding: 64px 0 48px; }
-        .hero-eyebrow { font-family: 'Anybody', sans-serif; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent2); margin-bottom: 14px; }
-        .hero h1 {
-            font-family: 'Anybody', sans-serif; font-size: clamp(36px, 6vw, 64px); font-weight: 900;
-            line-height: 1.05; letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #e2eeff 0%, #93bbf7 50%, var(--accent2) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px;
-        }
-        .hero-prize { font-family: 'Anybody', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
-        .hero p { color: var(--text3); font-size: 15px; max-width: 440px; margin: 0 auto; line-height: 1.6; }
+        .hero { text-align:center; padding:64px 0 48px; }
+        .hero-eyebrow { font-family:'Anybody',sans-serif; font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent2); margin-bottom:14px; }
+        .hero h1 { font-family:'Anybody',sans-serif; font-size:clamp(36px,6vw,64px); font-weight:900; line-height:1.05; letter-spacing:-0.02em; background:linear-gradient(135deg,#e2eeff 0%,#93bbf7 50%,var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:10px; }
+        .hero-prize { font-family:'Anybody',sans-serif; font-size:20px; font-weight:700; color:var(--gold); margin-bottom:10px; }
+        .hero p { color:var(--text3); font-size:15px; max-width:440px; margin:0 auto; line-height:1.6; }
 
-        .section { display: none; }
-        .section.active { display: block; }
+        .section { display:none; }
+        .section.active { display:block; }
 
-        /* PANEL */
-        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-        .panel + .panel { margin-top: 16px; }
-        .panel-header { padding: 20px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-        .panel-header h2 { font-family: 'Anybody', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
-        .panel-icon { width: 28px; height: 28px; background: rgba(37,99,235,0.15); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        .panel-body { padding: 28px; }
+        .panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+        .panel+.panel { margin-top:16px; }
+        .panel-header { padding:20px 28px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+        .panel-header h2 { font-family:'Anybody',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text); }
+        .panel-icon { width:28px; height:28px; background:rgba(37,99,235,0.15); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:14px; }
+        .panel-body { padding:28px; }
 
-        /* RULES */
-        .rule-category { margin-bottom: 28px; }
-        .rule-category:last-child { margin-bottom: 0; }
-        .rule-cat-title {
-            font-family: 'Anybody', sans-serif; font-size: 12px; font-weight: 700;
-            letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent2);
-            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-        }
-        .rule-cat-title::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
-        .rule-list { display: flex; flex-direction: column; gap: 8px; }
-        .rule-item {
-            background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
-            padding: 13px 16px; display: flex; align-items: flex-start; gap: 12px;
-            font-size: 14px; line-height: 1.55; color: var(--text2); transition: border-color 0.2s;
-        }
-        .rule-item:hover { border-color: var(--border2); }
-        .rule-num { font-family: 'Anybody', sans-serif; font-size: 11px; font-weight: 700; color: var(--text3); min-width: 20px; margin-top: 1px; }
-        .rule-item strong { color: var(--text); }
+        .rule-category { margin-bottom:28px; }
+        .rule-category:last-child { margin-bottom:0; }
+        .rule-cat-title { font-family:'Anybody',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent2); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+        .rule-cat-title::after { content:''; flex:1; height:1px; background:var(--border2); }
+        .rule-list { display:flex; flex-direction:column; gap:8px; }
+        .rule-item { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:13px 16px; display:flex; align-items:flex-start; gap:12px; font-size:14px; line-height:1.55; color:var(--text2); transition:border-color 0.2s; }
+        .rule-item:hover { border-color:var(--border2); }
+        .rule-num { font-family:'Anybody',sans-serif; font-size:11px; font-weight:700; color:var(--text3); min-width:20px; margin-top:1px; }
+        .rule-item strong { color:var(--text); }
 
-        /* BRACKET - Team Slots */
-        .team-slot {
-            background: var(--bg3); border: 1px solid var(--border); border-radius: 5px;
-            padding: 6px 10px; font-size: 11px; font-weight: 500; color: var(--text3);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            display: flex; align-items: center; gap: 5px;
-            min-height: 28px; width: 128px; transition: all 0.15s;
-        }
-        .team-slot + .team-slot { margin-top: 2px; }
-        .team-slot.filled { color: var(--text); border-color: var(--border2); background: var(--surface2); }
-        .team-slot.winner { color: #4ade80; border-color: #16a34a; background: var(--win-bg); font-weight: 600; }
-        .team-slot.dq { color: #f87171; border-color: #dc2626; background: var(--dq-bg); text-decoration: line-through; opacity: 0.75; }
-        .team-slot.tbd { color: var(--text3); font-style: italic; font-size: 10px; }
-        .team-seed { font-family: 'Anybody', sans-serif; font-size: 9px; font-weight: 700; color: var(--text3); min-width: 16px; flex-shrink: 0; }
-        .team-name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
-        .team-score { font-family: 'Anybody', sans-serif; font-size: 11px; font-weight: 700; color: var(--text3); flex-shrink: 0; }
-        .team-slot.winner .team-score { color: #4ade80; }
-        .dq-tag { font-family: 'Anybody', sans-serif; font-size: 8px; font-weight: 700; background: rgba(220,38,38,0.2); color: #f87171; border-radius: 3px; padding: 1px 4px; flex-shrink: 0; }
+        /* BRACKET */
+        .team-slot { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:6px 10px; font-size:11px; font-weight:500; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-height:28px; width:128px; transition:all 0.15s; }
+        .team-slot+.team-slot { margin-top:2px; }
+        .team-slot.winner { color:#4ade80; border-color:#16a34a; background:var(--win-bg); font-weight:600; }
+        .team-slot.dq { color:#f87171; border-color:#dc2626; background:var(--dq-bg); text-decoration:line-through; opacity:0.75; }
+        .team-slot.tbd { color:var(--text3); font-style:italic; font-size:10px; }
+        .team-name { flex:1; overflow:hidden; text-overflow:ellipsis; }
+        .team-score { font-family:'Anybody',sans-serif; font-size:11px; font-weight:700; color:var(--text3); flex-shrink:0; }
+        .team-slot.winner .team-score { color:#4ade80; }
+        .dq-tag { font-family:'Anybody',sans-serif; font-size:8px; font-weight:700; background:rgba(220,38,38,0.2); color:#f87171; border-radius:3px; padding:1px 4px; flex-shrink:0; }
 
-        /* Play-in label */
-        .playin-badge {
-            font-family: 'Anybody', sans-serif; font-size: 8px; font-weight: 700;
-            background: rgba(37,99,235,0.2); color: var(--accent2);
-            border-radius: 3px; padding: 1px 5px; letter-spacing: 0.08em;
-            text-transform: uppercase; margin-bottom: 4px; display: inline-block;
-        }
+        .match.finals .team-slot { border-color:var(--gold-dim); background:rgba(240,180,41,0.05); }
+        .match.finals .team-slot.winner { color:#fde68a; border-color:var(--gold); background:rgba(240,180,41,0.15); }
 
-        /* Finals */
-        .match.finals .team-slot { border-color: var(--gold-dim); background: rgba(240,180,41,0.05); }
-        .match.finals .team-slot.filled { color: var(--gold); border-color: var(--gold); background: rgba(240,180,41,0.1); }
-        .match.finals .team-slot.winner { color: #fde68a; border-color: var(--gold); background: rgba(240,180,41,0.15); }
+        .round-col { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+        .round-label { font-family:'Anybody',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--text3); margin-bottom:10px; text-align:center; white-space:nowrap; }
+        .finals-crown { text-align:center; font-size:15px; margin-bottom:4px; }
 
-        /* Round labels */
-        .round-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-        .round-label { font-family: 'Anybody', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; text-align: center; white-space: nowrap; }
-        .finals-crown { text-align: center; font-size: 15px; margin-bottom: 4px; }
+        .bracket-legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+        .legend-item { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text3); }
+        .legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+        .legend-dot.l-tbd    { background:var(--bg3); border:1px solid var(--border); }
+        .legend-dot.l-winner { background:var(--win-bg); border:1px solid #16a34a; }
+        .legend-dot.l-dq     { background:var(--dq-bg); border:1px solid #dc2626; }
+        .legend-dot.l-finals { background:rgba(240,180,41,0.1); border:1px solid var(--gold); }
 
-        /* Legend */
-        .bracket-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-        .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text3); }
-        .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-        .legend-dot.l-tbd { background: var(--bg3); border: 1px solid var(--border); }
-        .legend-dot.l-filled { background: var(--surface2); border: 1px solid var(--border2); }
-        .legend-dot.l-winner { background: var(--win-bg); border: 1px solid #16a34a; }
-        .legend-dot.l-dq { background: var(--dq-bg); border: 1px solid #dc2626; }
-        .legend-dot.l-finals { background: rgba(240,180,41,0.1); border: 1px solid var(--gold); }
-        .legend-dot.l-playin { background: rgba(37,99,235,0.15); border: 1px solid var(--accent2); }
-
-        .bracket-wrapper { overflow-x: auto; padding: 4px 0 16px; }
-
-        .config-note {
-            margin-top: 20px; background: rgba(37,99,235,0.06);
-            border: 1px solid rgba(37,99,235,0.2); border-radius: 8px;
-            padding: 14px 18px; font-size: 13px; color: var(--text3); line-height: 1.75;
-        }
-        .config-note code { background: var(--bg3); border: 1px solid var(--border2); border-radius: 4px; padding: 1px 6px; font-family: monospace; font-size: 12px; color: var(--accent2); }
+        .bracket-wrapper { overflow-x:auto; padding:4px 0 16px; }
+        .round-tag { font-family:'Anybody',sans-serif; font-size:8px; font-weight:700; letter-spacing:0.1em; margin-bottom:3px; }
+        .round-tag.winners { color:#4ade80; }
+        .round-tag.losers  { color:#f87171; }
     </style>
 </head>
 <body>
@@ -213,7 +127,6 @@
         <p>Official rulebook and live bracket for the LightCitySMP 2v2 tournament.</p>
     </div>
 
-    <!-- RULES -->
     <section id="rules" class="section active">
         <div class="panel">
             <div class="panel-header"><div class="panel-icon">📋</div><h2>Tournament Rulebook</h2></div>
@@ -265,16 +178,15 @@
         </div>
     </section>
 
-    <!-- BRACKET -->
     <section id="bracket" class="section">
         <div class="panel">
-            <div class="panel-header"><div class="panel-icon">🏆</div><h2>Tournament Bracket — 2v2 · 10 Teams</h2></div>
+            <div class="panel-header"><div class="panel-icon">🏆</div><h2>Tournament Bracket — 2v2 · 8 Teams</h2></div>
             <div class="panel-body">
                 <div class="bracket-legend">
-  <div class="legend-item"><div class="legend-dot l-tbd"></div>TBD / Empty</div>
-    <div class="legend-item"><div class="legend-dot l-winner"></div>Winner / Advanced</div>
-    <div class="legend-item"><div class="legend-dot l-dq"></div>Disqualified</div>
-    <div class="legend-item"><div class="legend-dot l-finals"></div>Grand Final</div>
+                    <div class="legend-item"><div class="legend-dot l-tbd"></div>TBD / Empty</div>
+                    <div class="legend-item"><div class="legend-dot l-winner"></div>Winner / Advanced</div>
+                    <div class="legend-item"><div class="legend-dot l-dq"></div>Disqualified</div>
+                    <div class="legend-item"><div class="legend-dot l-finals"></div>Grand Final</div>
                 </div>
                 <div class="bracket-wrapper">
                     <div id="bracket-root"></div>
@@ -286,131 +198,114 @@
 
 <script>
 // ================================================================
-//  BRACKET CONFIG — edit this section to manage the tournament
+//  BRACKET CONFIG
 //
-//  STRUCTURE (10 teams):
-//    4 teams play in Play-In (2 matches) → 2 winners go to QF
-//    6 teams get a bye directly to QF
-//    QF: 8 teams (6 bye + 2 play-in winners) → 4 matches → 4 winners
-//    SF: 4 winners → 2 matches → 2 winners
-//    Grand Final: 2 winners → champion
+//  FLOW (8 teams):
+//    Q1  — 4 matches, teams fight (left: q1[0], q1[1] / right: q1[2], q1[3])
+//    Q2W — winners of Q1 fight each other  (left: q2w[0] / right: q2w[1])
+//    Q2L — losers  of Q1 fight each other  (left: q2l[0] / right: q2l[1])
+//    QF  — Q2W winner vs Q2L winner        (left: qf[0]  / right: qf[1])
+//    SF  — QF left winner vs QF right winner
+//    GF  — Grand Final (1 match, 2 teams)
 //
-//  FIELDS per match:
-//    team1, team2   string  — team name ("TBD" for empty)
-//    score1, score2 string  — score label, e.g. "2" or "" to hide
-//    winner         number  — 0 = no result | 1 = team1 | 2 = team2
-//    dq1, dq2       boolean — true = that team is DISQUALIFIED
+//  FIELDS:
+//    team1, team2   — team name ("TBD" for empty)
+//    score1, score2 — e.g. "2", or "" to hide
+//    winner         — 0=pending | 1=team1 won | 2=team2 won
+//    dq1, dq2       — true = disqualified
 //
-//  HOW ROUNDS CONNECT:
-//    playIn[0] winner → qf[2].team2  (QF3, right slot)
-//    playIn[1] winner → qf[3].team2  (QF4, right slot)
-//    qf[0] + qf[1]   → sf[0]         (left semifinal)
-//    qf[2] + qf[3]   → sf[1]         (right semifinal)
-//    sf[0] + sf[1]   → grandFinal
-//
-//  TO ADD A TEAM:   set any "TBD" to their name
-//  TO REMOVE A TEAM: set name back to "TBD", clear score, set winner: 0
-//  TO DISQUALIFY:   set dq1 or dq2 to true on their match
+//  ADD TEAM:    "TBD" → "TeamName"
+//  REMOVE TEAM: name → "TBD", scores → "", winner → 0
+//  DISQUALIFY:  dq1 or dq2 → true
 // ================================================================
 const BRACKET_CONFIG = {
-    playIn: [
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // PI1 → winner fills QF3 slot B
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // PI2 → winner fills QF4 slot B
+    q1: [
+        { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Left Match 1
+        { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Left Match 2
+        { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Right Match 3
+        { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Right Match 4
+    ],
+    q2w: [
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Winners LEFT  (W of M1 vs W of M2)
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Winners RIGHT (W of M3 vs W of M4)
+    ],
+    q2l: [
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Losers LEFT  (L of M1 vs L of M2)
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // Losers RIGHT (L of M3 vs L of M4)
     ],
     qf: [
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF1 — seed 1 vs seed 6 (bye)
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF2 — seed 3 vs seed 4 (bye)
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF3 — seed 2 (bye) vs winner of PI1
-        { team1: "TBD", team2: "TBD", score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // QF4 — seed 5 (bye) vs winner of PI2
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF LEFT  (Q2W-L winner vs Q2L-L winner)
+        { score1:"", score2:"", winner:0, dq1:false, dq2:false }, // QF RIGHT (Q2W-R winner vs Q2L-R winner)
     ],
-    sf: [
-        { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // SF1 — winners of QF1 & QF2
-        { score1: "", score2: "", winner: 0, dq1: false, dq2: false }, // SF2 — winners of QF3 & QF4
-    ],
-    grandFinal: { score1: "", score2: "", winner: 0, dq1: false, dq2: false },
+    sf: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
+    gf: { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false },
 };
 // ================================================================
 
-function advance(match, t1, t2) {
-    if (!match.winner) return null;
-    if (match.winner === 1) return match.dq1 ? null : t1;
-    if (match.winner === 2) return match.dq2 ? null : t2;
-    return null;
+function adv(m, t1, t2) {
+    if (!m.winner) return null;
+    return m.winner===1 ? (m.dq1?null:t1) : (m.dq2?null:t2);
+}
+function lose(m, t1, t2) {
+    if (!m.winner) return null;
+    return m.winner===1 ? t2 : t1;
 }
 
 function buildBracket() {
-    const { playIn: pi, qf, sf, grandFinal: gf } = BRACKET_CONFIG;
+    const { q1, q2w, q2l, qf, sf, gf } = BRACKET_CONFIG;
 
-    // Derive play-in winners (they flow into QF3 slot B and QF4 slot B)
-    const piWinner0 = advance(pi[0], pi[0].team1, pi[0].team2);
-    const piWinner1 = advance(pi[1], pi[1].team1, pi[1].team2);
+    // Derive Q2 teams from Q1 results
+    const q2wT = [
+        [adv(q1[0],q1[0].team1,q1[0].team2), adv(q1[1],q1[1].team1,q1[1].team2)],
+        [adv(q1[2],q1[2].team1,q1[2].team2), adv(q1[3],q1[3].team1,q1[3].team2)],
+    ];
+    const q2lT = [
+        [lose(q1[0],q1[0].team1,q1[0].team2), lose(q1[1],q1[1].team1,q1[1].team2)],
+        [lose(q1[2],q1[2].team1,q1[2].team2), lose(q1[3],q1[3].team1,q1[3].team2)],
+    ];
 
-    // QF teams: QF1 and QF2 are fully seeded bye teams; QF3/QF4 team2 comes from play-in
+    // Derive QF teams from Q2 results
     const qfT = [
-        [qf[0].team1, qf[0].team2],
-        [qf[1].team1, qf[1].team2],
-        [qf[2].team1, piWinner0 || (pi[0].winner ? "—" : "PI1 Winner")],
-        [qf[3].team1, piWinner1 || (pi[1].winner ? "—" : "PI2 Winner")],
+        [adv(q2w[0],q2wT[0][0],q2wT[0][1]), adv(q2l[0],q2lT[0][0],q2lT[0][1])],
+        [adv(q2w[1],q2wT[1][0],q2wT[1][1]), adv(q2l[1],q2lT[1][0],q2lT[1][1])],
     ];
 
-    // SF teams derived from QF winners
-    const sfT = [
-        [advance(qf[0], qfT[0][0], qfT[0][1]), advance(qf[1], qfT[1][0], qfT[1][1])],
-        [advance(qf[2], qfT[2][0], qfT[2][1]), advance(qf[3], qfT[3][0], qfT[3][1])],
-    ];
+    // Derive SF teams from QF results
+    const sfT = [adv(qf[0],qfT[0][0],qfT[0][1]), adv(qf[1],qfT[1][0],qfT[1][1])];
 
-    // GF teams derived from SF winners
-    const gfT = [
-        advance(sf[0], sfT[0][0], sfT[0][1]),
-        advance(sf[1], sfT[1][0], sfT[1][1]),
-    ];
+    // GF uses config directly (set team1/team2 manually or derive from sf)
+    const gfTeam1 = adv(sf,sfT[0],sfT[1]) || gf.team1;
+    const gfTeam2 = gf.team2;
 
-    function slot(name, score, isWinner, isDQ, seed) {
-        const filled = name && name !== "TBD" && !name.includes("Winner");
-        const isTbd = !name || name === "TBD" || name.includes("Winner");
-        let cls = isTbd ? 'tbd' : 'filled';
-        if (isDQ) cls = 'dq';
-        else if (isWinner) cls = 'winner';
+    function slot(name, score, isWinner, isDQ) {
+        const isTbd = !name||name==='TBD';
+        let cls = isTbd?'tbd':'';
+        if (isDQ) cls='dq';
+        else if (isWinner) cls='winner';
         return `<div class="team-slot ${cls}">
-            ${seed ? `<span class="team-seed">#${seed}</span>` : ''}
-            <span class="team-name">${name || 'TBD'}</span>
-            ${isDQ ? '<span class="dq-tag">DQ</span>' : (score ? `<span class="team-score">${score}</span>` : '')}
+            <span class="team-name">${name||'TBD'}</span>
+            ${isDQ?'<span class="dq-tag">DQ</span>':(score?`<span class="team-score">${score}</span>`:'')}
         </div>`;
     }
 
-    function mtch(t1, t2, s1, s2, w, dq1, dq2, finals, sd1, sd2) {
-        const w1 = w===1 && !dq1, w2 = w===2 && !dq2;
+    function mtch(t1,t2,s1,s2,w,dq1,dq2,finals) {
+        const w1=w===1&&!dq1, w2=w===2&&!dq2;
         return `<div class="match${finals?' finals':''}">
-            ${slot(t1, s1, w1, dq1, sd1)}
-            ${slot(t2, s2, w2, dq2, sd2)}
+            ${slot(t1,s1,w1,dq1)}${slot(t2,s2,w2,dq2)}
         </div>`;
     }
 
-    function playInMtch(m) {
-        const w1 = m.winner===1 && !m.dq1, w2 = m.winner===2 && !m.dq2;
-        return `<div style="display:flex;flex-direction:column;align-items:flex-start;">
-            <div class="playin-badge">Play-In</div>
-            <div class="match">
-                ${slot(m.team1, m.score1, w1, m.dq1)}
-                ${slot(m.team2, m.score2, w2, m.dq2)}
-            </div>
-        </div>`;
-    }
-
-    function svgMerge(dir, h) {
-        const mid = h / 2;
-        const q1y = h * 0.25, q3y = h * 0.75;
-        if (dir === 'left') {
-            return `<svg width="32" height="${h}" style="overflow:visible;flex-shrink:0;display:block;">
+    function svgMerge(dir,h) {
+        const mid=h/2,q1y=h*.25,q3y=h*.75;
+        return dir==='left'
+            ?`<svg width="32" height="${h}" style="overflow:visible;flex-shrink:0;display:block;">
                 <polyline points="0,${q1y} 16,${q1y} 16,${mid} 32,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
                 <polyline points="0,${q3y} 16,${q3y} 16,${mid} 32,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
-            </svg>`;
-        } else {
-            return `<svg width="32" height="${h}" style="overflow:visible;flex-shrink:0;display:block;">
+              </svg>`
+            :`<svg width="32" height="${h}" style="overflow:visible;flex-shrink:0;display:block;">
                 <polyline points="32,${q1y} 16,${q1y} 16,${mid} 0,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
                 <polyline points="32,${q3y} 16,${q3y} 16,${mid} 0,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
-            </svg>`;
-        }
+              </svg>`;
     }
 
     function svgLine(w) {
@@ -419,116 +314,145 @@ function buildBracket() {
         </svg>`;
     }
 
-    // Play-in match height: badge(~18px) + match(58px) = ~76px
-    // QF match height: 58px
-    // Gap between QF1 and QF2: 72px
-    // QF full column height: 58 + 72 + 58 = 188px
-    const MATCH_H  = 58;
-    const QF_GAP   = 72;
-    const QF_FULL  = MATCH_H + QF_GAP + MATCH_H; // 188
-    const LABEL_H  = 29; // round-label height + margin
-    const PI_H     = 76; // play-in badge + match
-
-    // Play-in matches need to vertically align with QF3 (top) and QF4 (bottom) on the right side.
-    // QF right col: top match at y=LABEL_H, bottom match at y=LABEL_H+MATCH_H+QF_GAP
-    // Play-in col needs same layout but stacked with a gap equal to QF_GAP between them.
-    const PI_GAP = QF_GAP + MATCH_H - PI_H; // gap between the two play-in matches so they align with QF3/QF4
+    // Layout
+    const MH=58, GSM=8, GLG=56, LH=29;
+    const PAIR_H = MH+GSM+MH;               // 124
+    const Q2_FULL = MH+GLG+MH;              // 172
+    const Q2_OFF  = PAIR_H/2-MH/2;          // 33
+    const QF_OFF  = Q2_FULL/2-MH/2;         // 57
+    const SF_TOP  = QF_OFF-19;
 
     document.getElementById('bracket-root').innerHTML = `
-<div style="display:flex;align-items:flex-start;justify-content:center;gap:0;min-width:900px;">
+<div style="display:flex;align-items:flex-start;justify-content:center;gap:0;min-width:1100px;">
+
+  <!-- Q1 LEFT -->
+  <div class="round-col">
+    <div class="round-label">Round 1</div>
+    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
+      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
+        ${mtch(q1[0].team1,q1[0].team2,q1[0].score1,q1[0].score2,q1[0].winner,q1[0].dq1,q1[0].dq2)}
+        ${mtch(q1[1].team1,q1[1].team2,q1[1].score1,q1[1].score2,q1[1].winner,q1[1].dq1,q1[1].dq2)}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
+        ${mtch(q1[2].team1,q1[2].team2,q1[2].score1,q1[2].score2,q1[2].winner,q1[2].dq1,q1[2].dq2)}
+        ${mtch(q1[3].team1,q1[3].team2,q1[3].score1,q1[3].score2,q1[3].winner,q1[3].dq1,q1[3].dq2)}
+      </div>
+    </div>
+  </div>
+
+  <!-- CONN Q1→Q2 LEFT -->
+  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
+    ${svgMerge('left',PAIR_H)}${svgMerge('left',PAIR_H)}
+  </div>
+
+  <!-- Q2 LEFT -->
+  <div class="round-col">
+    <div class="round-label">Round 2</div>
+    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
+      <div style="margin-top:${Q2_OFF}px;">
+        <div class="round-tag winners">WINNERS</div>
+        ${mtch(q2wT[0][0],q2wT[0][1],q2w[0].score1,q2w[0].score2,q2w[0].winner,q2w[0].dq1,q2w[0].dq2)}
+      </div>
+      <div style="margin-top:${Q2_OFF}px;">
+        <div class="round-tag losers">LOSERS</div>
+        ${mtch(q2lT[0][0],q2lT[0][1],q2l[0].score1,q2l[0].score2,q2l[0].winner,q2l[0].dq1,q2l[0].dq2)}
+      </div>
+    </div>
+  </div>
+
+  <!-- CONN Q2→QF LEFT -->
+  <div style="margin-top:${LH+Q2_OFF+11}px;">
+    ${svgMerge('left',GLG+MH+Q2_OFF*2-22)}
+  </div>
 
   <!-- QF LEFT -->
-  <div class="round-col">
-    <div class="round-label">Quarterfinals</div>
-    <div style="display:flex;flex-direction:column;gap:${QF_GAP}px;">
-      ${mtch(qfT[0][0], qfT[0][1], qf[0].score1, qf[0].score2, qf[0].winner, qf[0].dq1, qf[0].dq2, false, 1, 6)}
-      ${mtch(qfT[1][0], qfT[1][1], qf[1].score1, qf[1].score2, qf[1].winner, qf[1].dq1, qf[1].dq2, false, 3, 4)}
-    </div>
+  <div class="round-col" style="margin-top:${QF_OFF}px;">
+    <div class="round-label">Quarterfinal</div>
+    ${mtch(qfT[0][0],qfT[0][1],qf[0].score1,qf[0].score2,qf[0].winner,qf[0].dq1,qf[0].dq2)}
   </div>
 
-  <!-- CONN: QF→SF left -->
-  <div style="margin-top:${LABEL_H}px;">
-    ${svgMerge('left', QF_FULL)}
-  </div>
+  <!-- CONN QF→SF LEFT -->
+  <div style="margin-top:${QF_OFF+LH+MH/2-14}px;">${svgLine(28)}</div>
 
-  <!-- SF LEFT -->
-  <div class="round-col" style="margin-top:${LABEL_H + (QF_FULL/2) - (MATCH_H/2) - LABEL_H}px;">
-    <div class="round-label">Semifinals</div>
-    ${mtch(sfT[0][0], sfT[0][1], sf[0].score1, sf[0].score2, sf[0].winner, sf[0].dq1, sf[0].dq2, false)}
-  </div>
-
-  <!-- CONN: SF→GF left -->
-  <div style="margin-top:${LABEL_H + (QF_FULL/2) - (MATCH_H/2) + MATCH_H/2 - 14}px;">
-    ${svgLine(28)}
-  </div>
-
-  <!-- GRAND FINAL -->
-  <div class="round-col" style="margin-top:${LABEL_H + (QF_FULL/2) - (MATCH_H/2) - LABEL_H - 19}px;">
-    <div class="round-label" style="color:var(--gold);">Grand Final</div>
+  <!-- SF + GF CENTER -->
+  <div style="display:flex;flex-direction:column;align-items:center;margin-top:${SF_TOP}px;">
+    <div class="round-label">Semifinal</div>
+    ${mtch(sfT[0],sfT[1],sf.score1,sf.score2,sf.winner,sf.dq1,sf.dq2)}
+    <svg width="2" height="20" style="display:block;margin:8px auto 0;">
+      <line x1="1" y1="0" x2="1" y2="20" stroke="#243345" stroke-width="1.5"/>
+    </svg>
+    <div class="round-label" style="color:var(--gold);margin-top:8px;">Grand Final</div>
     <div class="finals-crown">🏆</div>
-    ${mtch(gfT[0], gfT[1], gf.score1, gf.score2, gf.winner, gf.dq1, gf.dq2, true)}
+    ${mtch(gfTeam1,gfTeam2,gf.score1,gf.score2,gf.winner,gf.dq1,gf.dq2,true)}
   </div>
 
-  <!-- CONN: GF→SF right -->
-  <div style="margin-top:${LABEL_H + (QF_FULL/2) - (MATCH_H/2) + MATCH_H/2 - 14}px;">
-    ${svgLine(28)}
-  </div>
-
-  <!-- SF RIGHT -->
-  <div class="round-col" style="margin-top:${LABEL_H + (QF_FULL/2) - (MATCH_H/2) - LABEL_H}px;">
-    <div class="round-label">Semifinals</div>
-    ${mtch(sfT[1][0], sfT[1][1], sf[1].score1, sf[1].score2, sf[1].winner, sf[1].dq1, sf[1].dq2, false)}
-  </div>
-
-  <!-- CONN: SF→QF right -->
-  <div style="margin-top:${LABEL_H}px;">
-    ${svgMerge('right', QF_FULL)}
-  </div>
+  <!-- CONN QF→SF RIGHT -->
+  <div style="margin-top:${QF_OFF+LH+MH/2-14}px;">${svgLine(28)}</div>
 
   <!-- QF RIGHT -->
+  <div class="round-col" style="margin-top:${QF_OFF}px;">
+    <div class="round-label">Quarterfinal</div>
+    ${mtch(qfT[1][0],qfT[1][1],qf[1].score1,qf[1].score2,qf[1].winner,qf[1].dq1,qf[1].dq2)}
+  </div>
+
+  <!-- CONN Q2→QF RIGHT -->
+  <div style="margin-top:${LH+Q2_OFF+11}px;">
+    ${svgMerge('right',GLG+MH+Q2_OFF*2-22)}
+  </div>
+
+  <!-- Q2 RIGHT -->
   <div class="round-col">
-    <div class="round-label">Quarterfinals</div>
-    <div style="display:flex;flex-direction:column;gap:${QF_GAP}px;">
-      ${mtch(qfT[2][0], qfT[2][1], qf[2].score1, qf[2].score2, qf[2].winner, qf[2].dq1, qf[2].dq2, false, 2)}
-      ${mtch(qfT[3][0], qfT[3][1], qf[3].score1, qf[3].score2, qf[3].winner, qf[3].dq1, qf[3].dq2, false, 5)}
+    <div class="round-label">Round 2</div>
+    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
+      <div style="margin-top:${Q2_OFF}px;">
+        <div class="round-tag winners">WINNERS</div>
+        ${mtch(q2wT[1][0],q2wT[1][1],q2w[1].score1,q2w[1].score2,q2w[1].winner,q2w[1].dq1,q2w[1].dq2)}
+      </div>
+      <div style="margin-top:${Q2_OFF}px;">
+        <div class="round-tag losers">LOSERS</div>
+        ${mtch(q2lT[1][0],q2lT[1][1],q2l[1].score1,q2l[1].score2,q2l[1].winner,q2l[1].dq1,q2l[1].dq2)}
+      </div>
     </div>
   </div>
 
-  <!-- CONN: QF→Play-In right (simple lines to each play-in) -->
-  <div style="display:flex;flex-direction:column;gap:${QF_GAP}px;margin-top:${LABEL_H + (MATCH_H/2) - 14}px;">
-    ${svgLine(20)}
-    ${svgLine(20)}
+  <!-- CONN Q1→Q2 RIGHT -->
+  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
+    ${svgMerge('right',PAIR_H)}${svgMerge('right',PAIR_H)}
   </div>
 
-  <!-- PLAY-IN -->
+  <!-- Q1 RIGHT -->
   <div class="round-col">
-    <div class="round-label" style="color:var(--accent2);">Play-In</div>
-    <div style="display:flex;flex-direction:column;gap:${QF_GAP}px;">
-      <div class="match">${slot(pi[0].team1, pi[0].score1, pi[0].winner===1 && !pi[0].dq1, pi[0].dq1)}${slot(pi[0].team2, pi[0].score2, pi[0].winner===2 && !pi[0].dq2, pi[0].dq2)}</div>
-      <div class="match">${slot(pi[1].team1, pi[1].score1, pi[1].winner===1 && !pi[1].dq1, pi[1].dq1)}${slot(pi[1].team2, pi[1].score2, pi[1].winner===2 && !pi[1].dq2, pi[1].dq2)}</div>
+    <div class="round-label">Round 1</div>
+    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
+      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
+        ${mtch(q1[2].team1,q1[2].team2,q1[2].score1,q1[2].score2,q1[2].winner,q1[2].dq1,q1[2].dq2)}
+        ${mtch(q1[3].team1,q1[3].team2,q1[3].score1,q1[3].score2,q1[3].winner,q1[3].dq1,q1[3].dq2)}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:${GSM}px;">
+        ${mtch(q1[0].team1,q1[0].team2,q1[0].score1,q1[0].score2,q1[0].winner,q1[0].dq1,q1[0].dq2)}
+        ${mtch(q1[1].team1,q1[1].team2,q1[1].score1,q1[1].score2,q1[1].winner,q1[1].dq1,q1[1].dq2)}
+      </div>
     </div>
   </div>
 
 </div>`;
 }
 
-// NAV
 document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         tab.classList.add('active');
         document.getElementById(tab.dataset.section).classList.add('active');
-        if (tab.dataset.section === 'bracket') buildBracket();
+        if (tab.dataset.section==='bracket') buildBracket();
     });
 });
 
-// LOADING
 window.addEventListener('load', () => {
     setTimeout(() => {
         const ls = document.getElementById('loading-screen');
         ls.style.opacity = '0';
-        setTimeout(() => ls.style.display = 'none', 600);
+        setTimeout(() => ls.style.display='none', 600);
     }, 900);
 });
 </script>
