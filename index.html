@@ -56,7 +56,6 @@
             letter-spacing: 2px;
         }
 
-        /* LightCitySMP decorative elements */
         .divider {
             display: flex;
             align-items: center;
@@ -103,7 +102,6 @@
             color: #FFD700;
         }
 
-        /* Row with particle container */
         .leaderboard-row {
             display: grid;
             grid-template-columns: 80px 1fr 120px 140px 140px 120px;
@@ -113,19 +111,24 @@
             align-items: center;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .leaderboard-row:hover {
-            background: rgba(255, 215, 0, 0.05);
-            transform: translateX(5px);
+            background: rgba(255, 215, 0, 0.08);
+            transform: translateX(8px) scale(1.01);
             border-left: 3px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .leaderboard-row:active {
+            transform: translateX(5px) scale(0.99);
         }
 
         .leaderboard-row:last-child {
             border-bottom: none;
         }
 
-        /* Particle canvas per row */
         .row-particles {
             position: absolute;
             top: 0;
@@ -142,7 +145,7 @@
             display: contents;
         }
 
-        /* Rank Styling with Glow Effects */
+        /* Rank Styling */
         .rank {
             font-size: 1.5rem;
             font-weight: 800;
@@ -151,7 +154,6 @@
             z-index: 2;
         }
 
-        /* Rank 1 - Diamond with Light Blue Glow */
         .rank-1 {
             color: #00e5ff;
             text-shadow: 
@@ -179,7 +181,6 @@
             }
         }
 
-        /* Rank 2 - Gold with Gold Particles */
         .rank-2 {
             color: #ffd700;
             text-shadow: 
@@ -204,7 +205,6 @@
             }
         }
 
-        /* Rank 3 - Iron with Grey Particles */
         .rank-3 {
             color: #b0b0b0;
             text-shadow: 
@@ -231,7 +231,6 @@
 
         .rank-other { color: #666; }
 
-        /* Row glow for top 3 */
         .row-1 {
             background: linear-gradient(90deg, rgba(0, 229, 255, 0.08) 0%, transparent 100%);
             border-left: 3px solid #00e5ff;
@@ -264,6 +263,11 @@
             border: 2px solid rgba(255, 215, 0, 0.3);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             background: #1a1a1a;
+            transition: transform 0.3s ease;
+        }
+
+        .leaderboard-row:hover .player-head {
+            transform: scale(1.15);
         }
 
         .player-head-rank-1 {
@@ -281,7 +285,6 @@
             box-shadow: 0 0 15px rgba(176, 176, 176, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
-        /* Glowing Player Names */
         .player-name {
             font-weight: 600;
             font-size: 1.1rem;
@@ -362,7 +365,6 @@
             }
         }
 
-        /* Stats */
         .stat {
             text-align: center;
             font-weight: 600;
@@ -376,22 +378,321 @@
         .stat-playtime { color: #ffe66d; }
         .stat-rebirths { color: #a8e6cf; }
 
-        /* Loading state */
-        .loading-head {
-            width: 48px;
-            height: 48px;
-            border-radius: 8px;
-            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        /* ==========================================
+           PLAYER DETAIL MODAL
+           ========================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: linear-gradient(145deg, #141418 0%, #1a1a22 100%);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 24px;
+            padding: 0;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.7) translateY(50px);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.6),
+                0 0 60px rgba(255, 215, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: rgba(255, 0, 0, 0.4);
+            color: #ff6b6b;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            padding: 40px 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-rank-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        .modal-rank-1 {
+            background: rgba(0, 229, 255, 0.15);
+            border: 1px solid rgba(0, 229, 255, 0.4);
+            color: #00e5ff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        .modal-rank-2 {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .modal-rank-3 {
+            background: rgba(176, 176, 176, 0.15);
+            border: 1px solid rgba(176, 176, 176, 0.4);
+            color: #b0b0b0;
+            text-shadow: 0 0 10px rgba(176, 176, 176, 0.5);
+        }
+
+        .modal-rank-other {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #aaa;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .modal-username {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .modal-uuid {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #555;
+            letter-spacing: 1px;
+        }
+
+        .modal-body {
+            padding: 20px 40px 40px;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .modal-skin-section {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-full-skin {
+            width: 160px;
+            height: 320px;
+            image-rendering: pixelated;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+            background: linear-gradient(180deg, rgba(255,215,0,0.03) 0%, transparent 100%);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-full-skin:hover {
+            transform: scale(1.02);
+        }
+
+        .modal-skin-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modal-stats-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(180deg, #FFD700, #FFA500);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-stat-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+            border-color: rgba(255, 215, 0, 0.15);
+        }
+
+        .modal-stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .modal-stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .modal-stat-icon.kills { background: rgba(255, 107, 107, 0.15); }
+        .modal-stat-icon.skill { background: rgba(78, 205, 196, 0.15); }
+        .modal-stat-icon.playtime { background: rgba(255, 230, 109, 0.15); }
+        .modal-stat-icon.rebirths { background: rgba(168, 230, 207, 0.15); }
+        .modal-stat-icon.ability { background: rgba(255, 139, 148, 0.15); }
+
+        .modal-stat-info {
+            flex: 1;
+        }
+
+        .modal-stat-label {
+            font-size: 0.8rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+
+        .modal-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .modal-stat-value.kills { color: #ff6b6b; }
+        .modal-stat-value.skill { color: #4ecdc4; }
+        .modal-stat-value.playtime { color: #ffe66d; }
+        .modal-stat-value.rebirths { color: #a8e6cf; }
+        .modal-stat-value.ability { color: #ff8b94; }
+
+        .modal-ability-desc {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        /* Scrollbar styling for modal */
+        .modal-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .modal-box::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        .modal-box::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.4);
         }
 
         /* Responsive */
+        @media (max-width: 700px) {
+            .modal-body {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 25px 30px;
+            }
+
+            .modal-full-skin {
+                width: 120px;
+                height: 240px;
+            }
+
+            .modal-username {
+                font-size: 1.6rem;
+            }
+
+            .leaderboard-header,
+            .leaderboard-row {
+                grid-template-columns: 50px 1fr 80px 80px 80px 70px;
+                padding: 12px 15px;
+                font-size: 0.85rem;
+            }
+
+            .player-head {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
         @media (max-width: 900px) {
             .leaderboard-header,
             .leaderboard-row {
@@ -425,7 +726,6 @@
             <div class="divider-line"></div>
         </div>
 
-        <!-- Leaderboard Display -->
         <div class="leaderboard-wrapper">
             <div class="leaderboard-header">
                 <div>#</div>
@@ -435,8 +735,62 @@
                 <div>Playtime</div>
                 <div>Rebirths</div>
             </div>
-            <div id="leaderboard-body">
-                <!-- Populated by JavaScript -->
+            <div id="leaderboard-body"></div>
+        </div>
+    </div>
+
+    <!-- Player Detail Modal -->
+    <div class="modal-overlay" id="playerModal">
+        <div class="modal-box">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <div class="modal-rank-badge" id="modalRankBadge">RANK #1</div>
+                <div class="modal-username" id="modalUsername">Player</div>
+                <div class="modal-uuid" id="modalUUID">UUID</div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-skin-section">
+                    <img class="modal-full-skin" id="modalSkin" src="" alt="Full Skin">
+                    <div class="modal-skin-label">Full Skin Preview</div>
+                </div>
+                <div class="modal-stats-section">
+                    <div class="modal-stat-card">
+                        <div class="modal-stat-icon kills">⚔️</div>
+                        <div class="modal-stat-info">
+                            <div class="modal-stat-label">Total Kills</div>
+                            <div class="modal-stat-value kills" id="modalKills">0</div>
+                        </div>
+                    </div>
+                    <div class="modal-stat-card">
+                        <div class="modal-stat-icon skill">⭐</div>
+                        <div class="modal-stat-info">
+                            <div class="modal-stat-label">Skill Points</div>
+                            <div class="modal-stat-value skill" id="modalSkillPoints">0</div>
+                        </div>
+                    </div>
+                    <div class="modal-stat-card">
+                        <div class="modal-stat-icon playtime">⏱️</div>
+                        <div class="modal-stat-info">
+                            <div class="modal-stat-label">Playtime</div>
+                            <div class="modal-stat-value playtime" id="modalPlaytime">0h 0m</div>
+                        </div>
+                    </div>
+                    <div class="modal-stat-card">
+                        <div class="modal-stat-icon rebirths">🔄</div>
+                        <div class="modal-stat-info">
+                            <div class="modal-stat-label">Rebirths</div>
+                            <div class="modal-stat-value rebirths" id="modalRebirths">0</div>
+                        </div>
+                    </div>
+                    <div class="modal-stat-card">
+                        <div class="modal-stat-icon ability">⚡</div>
+                        <div class="modal-stat-info">
+                            <div class="modal-stat-label">Current Ability</div>
+                            <div class="modal-stat-value ability" id="modalAbility">None</div>
+                            <div class="modal-ability-desc" id="modalAbilityDesc">No ability equipped</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -445,77 +799,73 @@
         // ==========================================
         // PLAYER CONFIG - EDIT THIS ARRAY
         // ==========================================
-        // Just add username and stats - UUID auto-fetched!
-        // For cracked/offline players, Steve skin auto-shows
-        // {
-        //   username: "PlayerName",
-        //   kills: 0,
-        //   skillPoints: 0,
-        //   playtime: "0h 0m",
-        //   rebirths: 0
-        // }
-
         const PLAYERS = [
             {
                 username: "_samsters",
                 kills: 25000,
                 skillPoints: 120000,
                 playtime: "500h 30m",
-                rebirths: 20
+                rebirths: 20,
+                ability: "Reaper's Call",
+                abilityDesc: "Encases target in black rings — frozen, blinded, nauseous, hotbar locked for 4s. Deals 20% bonus damage."
             },
             {
                 username: "Notch",
                 kills: 15420,
                 skillPoints: 98500,
                 playtime: "342h 15m",
-                rebirths: 12
+                rebirths: 12,
+                ability: "Wraith Form",
+                abilityDesc: "Invisibility, cleanses debuffs, cancels all incoming damage for 5s. Blocks Reaper's Call."
             },
             {
                 username: "Dream",
                 kills: 12800,
                 skillPoints: 87600,
                 playtime: "298h 45m",
-                rebirths: 10
+                rebirths: 10,
+                ability: "Execution",
+                abilityDesc: "Hit an enemy below 25% HP within 10s for 2x damage."
             },
             {
                 username: "Technoblade",
                 kills: 9999,
                 skillPoints: 72000,
                 playtime: "256h 30m",
-                rebirths: 8
+                rebirths: 8,
+                ability: "Warlord's Aura",
+                abilityDesc: "Strength III and Speed III for 8s."
             },
             {
                 username: "TommyInnit",
                 kills: 5430,
                 skillPoints: 42100,
                 playtime: "189h 20m",
-                rebirths: 5
+                rebirths: 5,
+                ability: "Overclock",
+                abilityDesc: "Speed III, Haste II for 30s."
             },
             {
                 username: "WilburSoot",
                 kills: 3200,
                 skillPoints: 28500,
                 playtime: "145h 50m",
-                rebirths: 3
+                rebirths: 3,
+                ability: "Phantom Step",
+                abilityDesc: "Invisibility and portal particles for 4s."
             }
         ];
 
-        // Sort by kills (descending) - Change to sort by other stats:
-        // skillPoints, rebirths, etc.
         const SORT_BY = "kills";
-
-        // ==========================================
-        // UUID FETCHING SYSTEM (PlayerDB - More Reliable)
-        // ==========================================
         const uuidCache = new Map();
 
+        // ==========================================
+        // UUID FETCHING
+        // ==========================================
         async function fetchUUID(username) {
-            if (uuidCache.has(username)) {
-                return uuidCache.get(username);
-            }
+            if (uuidCache.has(username)) return uuidCache.get(username);
 
             try {
-                // Try PlayerDB first (handles case sensitivity better)
                 const response = await fetch(`https://playerdb.co/api/player/minecraft/${username}`);
                 if (response.ok) {
                     const data = await response.json();
@@ -526,7 +876,6 @@
                     }
                 }
 
-                // Fallback to Mojang API
                 const mojangResponse = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
                 if (mojangResponse.ok) {
                     const data = await mojangResponse.json();
@@ -535,7 +884,6 @@
                     return uuid;
                 }
 
-                // Player not found (cracked/offline) - return null for Steve skin
                 uuidCache.set(username, null);
                 return null;
             } catch (error) {
@@ -545,16 +893,18 @@
             }
         }
 
-        function getHeadUrl(uuid, username) {
-            if (!uuid) {
-                // Cracked/offline player - return Steve skin
-                return `https://crafthead.net/avatar/Steve/64`;
-            }
+        function getHeadUrl(uuid) {
+            if (!uuid) return `https://crafthead.net/avatar/Steve/64`;
             return `https://crafthead.net/avatar/${uuid}/64`;
         }
 
+        function getBodyUrl(uuid) {
+            if (!uuid) return `https://crafthead.net/body/Steve`;
+            return `https://crafthead.net/body/${uuid}`;
+        }
+
         // ==========================================
-        // PER-ROW PARTICLE SYSTEM
+        // PARTICLE SYSTEM
         // ==========================================
         const rowParticleSystems = new Map();
 
@@ -584,10 +934,7 @@
                 this.y += this.speedY;
                 this.wobble += this.wobbleSpeed;
                 this.life -= this.decay;
-
-                if (this.life <= 0 || this.y < -10) {
-                    this.reset();
-                }
+                if (this.life <= 0 || this.y < -10) this.reset();
             }
 
             draw() {
@@ -623,7 +970,6 @@
                 } else {
                     ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
                 }
-
                 ctx.restore();
             }
         }
@@ -641,23 +987,13 @@
                 particles.push(new RowParticle(canvas, color, type));
             }
 
-            const system = {
-                canvas,
-                particles,
-                animationId: null,
-                active: true
-            };
+            const system = { canvas, particles, animationId: null, active: true };
 
             function animate() {
                 if (!system.active) return;
                 const ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
-
+                particles.forEach(p => { p.update(); p.draw(); });
                 system.animationId = requestAnimationFrame(animate);
             }
 
@@ -666,43 +1002,68 @@
         }
 
         // ==========================================
-        // LEADERBOARD RENDERING
+        // MODAL SYSTEM
         // ==========================================
+        const modal = document.getElementById('playerModal');
+        const modalClose = document.getElementById('modalClose');
 
-        // Format numbers with commas
+        function openModal(player, rank, uuid) {
+            document.getElementById('modalRankBadge').textContent = `RANK #${rank}`;
+            document.getElementById('modalRankBadge').className = `modal-rank-badge modal-rank-${rank <= 3 ? rank : 'other'}`;
+            document.getElementById('modalUsername').textContent = player.username;
+            document.getElementById('modalUsername').style.color = rank === 1 ? '#00e5ff' : rank === 2 ? '#ffd700' : rank === 3 ? '#b0b0b0' : '#fff';
+            document.getElementById('modalUUID').textContent = uuid || 'Offline Player';
+            document.getElementById('modalSkin').src = getBodyUrl(uuid);
+            document.getElementById('modalKills').textContent = player.kills.toLocaleString();
+            document.getElementById('modalSkillPoints').textContent = player.skillPoints.toLocaleString();
+            document.getElementById('modalPlaytime').textContent = player.playtime;
+            document.getElementById('modalRebirths').textContent = player.rebirths;
+            document.getElementById('modalAbility').textContent = player.ability || 'None';
+            document.getElementById('modalAbilityDesc').textContent = player.abilityDesc || 'No ability equipped';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ==========================================
+        // RENDER LEADERBOARD
+        // ==========================================
         function formatNumber(num) {
             return num.toLocaleString();
         }
 
-        // Render leaderboard
         async function renderLeaderboard() {
             const container = document.getElementById('leaderboard-body');
-
-            // Sort players
             const sortedPlayers = [...PLAYERS].sort((a, b) => b[SORT_BY] - a[SORT_BY]);
 
-            // Fetch all UUIDs first
             const uuidPromises = sortedPlayers.map(p => fetchUUID(p.username));
             const uuids = await Promise.all(uuidPromises);
 
             container.innerHTML = sortedPlayers.map((player, index) => {
                 const rank = index + 1;
-                const rankClass = rank === 1 ? 'rank-1' : 
-                                 rank === 2 ? 'rank-2' : 
-                                 rank === 3 ? 'rank-3' : 'rank-other';
-
+                const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
                 const rowClass = rank <= 3 ? `row-${rank}` : '';
                 const headClass = rank <= 3 ? `player-head-rank-${rank}` : '';
                 const nameClass = rank <= 3 ? `player-name-rank-${rank}` : '';
-
                 const uuid = uuids[index];
-                const headUrl = getHeadUrl(uuid, player.username);
-
-                // Only top 3 get particles
+                const headUrl = getHeadUrl(uuid);
                 const particleCanvas = rank <= 3 ? '<canvas class="row-particles"></canvas>' : '';
 
                 return `
-                    <div class="leaderboard-row ${rowClass}" data-rank="${rank}">
+                    <div class="leaderboard-row ${rowClass}" data-rank="${rank}" data-username="${player.username}">
                         ${particleCanvas}
                         <div class="row-content">
                             <div class="rank ${rankClass}">#${rank}</div>
@@ -721,23 +1082,25 @@
                 `;
             }).join('');
 
-            // Initialize particle systems for top 3 rows
+            // Add click handlers
+            const rows = container.querySelectorAll('.leaderboard-row');
+            rows.forEach((row, index) => {
+                row.addEventListener('click', () => {
+                    openModal(sortedPlayers[index], index + 1, uuids[index]);
+                });
+            });
+
+            // Init particles
             setTimeout(() => {
-                const rows = container.querySelectorAll('.leaderboard-row');
                 rows.forEach((row, index) => {
                     const rank = index + 1;
-                    if (rank === 1) {
-                        initRowParticles(row, '#00e5ff', 'diamond', 20);
-                    } else if (rank === 2) {
-                        initRowParticles(row, '#ffd700', 'gold', 18);
-                    } else if (rank === 3) {
-                        initRowParticles(row, '#b0b0b0', 'iron', 15);
-                    }
+                    if (rank === 1) initRowParticles(row, '#00e5ff', 'diamond', 20);
+                    else if (rank === 2) initRowParticles(row, '#ffd700', 'gold', 18);
+                    else if (rank === 3) initRowParticles(row, '#b0b0b0', 'iron', 15);
                 });
             }, 100);
         }
 
-        // Handle window resize for particle canvases
         window.addEventListener('resize', () => {
             rowParticleSystems.forEach((system, rowElement) => {
                 const canvas = system.canvas;
@@ -747,7 +1110,6 @@
             });
         });
 
-        // Initialize
         renderLeaderboard();
     </script>
 </body>
