@@ -3,408 +3,560 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Light City SMP — $70 2v2 Tournament</title>
-    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Leaderboard</title>
     <style>
-        :root {
-            --bg: #0a0c10;
-            --bg3: #141920;
-            --surface: #161d27;
-            --surface2: #1c2533;
-            --border: #1e2d3d;
-            --border2: #243345;
-            --accent2: #3b82f6;
-            --gold: #f0b429;
-            --gold-dim: #a07820;
-            --text: #d4e0ef;
-            --text2: #8aa0b8;
-            --text3: #4d6a85;
-            --win-bg: rgba(22,163,74,0.1);
-            --dq-bg: rgba(220,38,38,0.08);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
-        body::before {
-            content:''; position:fixed; inset:0;
-            background-image: linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);
-            background-size:48px 48px; pointer-events:none; z-index:0;
+
+        body {
+            background: #0a0a0f;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-x: hidden;
         }
-        #loading-screen { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.6s ease; }
-        .loader-ring { width:48px; height:48px; border:3px solid var(--border2); border-top-color:var(--accent2); border-radius:50%; animation:spin 0.8s linear infinite; margin-bottom:18px; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        #loading-screen span { font-family:'Anybody',sans-serif; font-size:13px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text3); }
-        .navbar { position:relative; z-index:10; display:flex; justify-content:space-between; align-items:center; padding:0 48px; height:64px; background:rgba(10,12,16,0.9); border-bottom:1px solid var(--border); backdrop-filter:blur(12px); }
-        .logo { font-family:'Anybody',sans-serif; font-weight:900; font-size:18px; letter-spacing:0.05em; color:var(--text); }
-        .logo span { color:var(--accent2); }
-        .nav-tabs { display:flex; gap:4px; }
-        .nav-tab { background:transparent; border:none; color:var(--text3); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; padding:7px 16px; border-radius:6px; cursor:pointer; transition:all 0.2s; }
-        .nav-tab:hover { color:var(--text2); background:var(--surface); }
-        .nav-tab.active { color:var(--accent2); background:rgba(37,99,235,0.12); }
-        .nav-badge { display:inline-block; background:var(--gold); color:#0a0c10; font-family:'Anybody',sans-serif; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
-        main { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:0 24px 80px; }
-        .hero { text-align:center; padding:64px 0 48px; }
-        .hero-eyebrow { font-family:'Anybody',sans-serif; font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent2); margin-bottom:14px; }
-        .hero h1 { font-family:'Anybody',sans-serif; font-size:clamp(36px,6vw,64px); font-weight:900; line-height:1.05; letter-spacing:-0.02em; background:linear-gradient(135deg,#e2eeff 0%,#93bbf7 50%,var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:10px; }
-        .hero-prize { font-family:'Anybody',sans-serif; font-size:20px; font-weight:700; color:var(--gold); margin-bottom:10px; }
-        .hero p { color:var(--text3); font-size:15px; max-width:440px; margin:0 auto; line-height:1.6; }
-        .section { display:none; }
-        .section.active { display:block; }
-        .panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-        .panel+.panel { margin-top:16px; }
-        .panel-header { padding:20px 28px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-        .panel-header h2 { font-family:'Anybody',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text); }
-        .panel-icon { width:28px; height:28px; background:rgba(37,99,235,0.15); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:14px; }
-        .panel-body { padding:28px; }
-        .rule-category { margin-bottom:28px; }
-        .rule-category:last-child { margin-bottom:0; }
-        .rule-cat-title { font-family:'Anybody',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent2); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-        .rule-cat-title::after { content:''; flex:1; height:1px; background:var(--border2); }
-        .rule-list { display:flex; flex-direction:column; gap:8px; }
-        .rule-item { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:13px 16px; display:flex; align-items:flex-start; gap:12px; font-size:14px; line-height:1.55; color:var(--text2); transition:border-color 0.2s; }
-        .rule-item:hover { border-color:var(--border2); }
-        .rule-num { font-family:'Anybody',sans-serif; font-size:11px; font-weight:700; color:var(--text3); min-width:20px; margin-top:1px; }
-        .rule-item strong { color:var(--text); }
-        .team-slot { background:var(--bg3); border:1px solid var(--border); border-radius:5px; padding:6px 10px; font-size:11px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px; min-height:28px; width:148px; transition:all 0.15s; }
-        .team-slot+.team-slot { margin-top:2px; }
-        .team-slot.tbd { color:var(--text3); font-style:italic; font-size:10px; }
-        .team-slot.filled { color:var(--text); border-color:var(--border2); background:var(--surface2); }
-        .team-slot.winner { color:#4ade80; border-color:#16a34a; background:var(--win-bg); font-weight:600; }
-        .team-slot.dq { color:#f87171; border-color:#dc2626; background:var(--dq-bg); text-decoration:line-through; opacity:0.75; }
-        .team-name { flex:1; overflow:hidden; text-overflow:ellipsis; }
-        .team-score { font-family:'Anybody',sans-serif; font-size:11px; font-weight:700; color:var(--text3); flex-shrink:0; }
-        .team-slot.winner .team-score { color:#4ade80; }
-        .dq-tag { font-family:'Anybody',sans-serif; font-size:8px; font-weight:700; background:rgba(220,38,38,0.2); color:#f87171; border-radius:3px; padding:1px 4px; flex-shrink:0; }
-        .match.finals .team-slot { border-color:var(--gold-dim); background:rgba(240,180,41,0.05); }
-        .match.finals .team-slot.filled { color:var(--gold); border-color:var(--gold); background:rgba(240,180,41,0.1); }
-        .match.finals .team-slot.winner { color:#fde68a; border-color:var(--gold); background:rgba(240,180,41,0.15); }
-        .round-col { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
-        .round-label { font-family:'Anybody',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--text3); margin-bottom:10px; text-align:center; white-space:nowrap; }
-        .finals-crown { text-align:center; font-size:15px; margin-bottom:4px; }
-        .bracket-legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--border); }
-        .legend-item { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text3); }
-        .legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
-        .legend-dot.l-tbd    { background:var(--bg3); border:1px solid var(--border); }
-        .legend-dot.l-winner { background:var(--win-bg); border:1px solid #16a34a; }
-        .legend-dot.l-dq     { background:var(--dq-bg); border:1px solid #dc2626; }
-        .legend-dot.l-finals { background:rgba(240,180,41,0.1); border:1px solid var(--gold); }
-        .bracket-wrapper { overflow-x:auto; padding:4px 0 16px; }
-        .round-tag { font-family:'Anybody',sans-serif; font-size:8px; font-weight:700; letter-spacing:0.1em; margin-bottom:3px; }
-        .round-tag.winners { color:#4ade80; }
-        .round-tag.losers  { color:#f87171; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Particle Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Leaderboard Table */
+        .leaderboard-wrapper {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 140px 140px 120px 120px;
+            padding: 20px 30px;
+            background: rgba(102, 126, 234, 0.1);
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: #667eea;
+        }
+
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 140px 140px 120px 120px;
+            padding: 16px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            align-items: center;
+            position: relative;
+        }
+
+        .leaderboard-row:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+        }
+
+        .leaderboard-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Rank Styling with Glow Effects */
+        .rank {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Rank 1 - Diamond with Light Blue Glow */
+        .rank-1 {
+            color: #00e5ff;
+            text-shadow: 
+                0 0 10px rgba(0, 229, 255, 0.8),
+                0 0 20px rgba(0, 229, 255, 0.6),
+                0 0 40px rgba(0, 229, 255, 0.4),
+                0 0 80px rgba(0, 229, 255, 0.2);
+            animation: diamondPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes diamondPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px rgba(0, 229, 255, 0.8),
+                    0 0 20px rgba(0, 229, 255, 0.6),
+                    0 0 40px rgba(0, 229, 255, 0.4),
+                    0 0 80px rgba(0, 229, 255, 0.2);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 15px rgba(0, 229, 255, 1),
+                    0 0 30px rgba(0, 229, 255, 0.8),
+                    0 0 60px rgba(0, 229, 255, 0.6),
+                    0 0 100px rgba(0, 229, 255, 0.4);
+            }
+        }
+
+        /* Rank 2 - Gold with Gold Particles */
+        .rank-2 {
+            color: #ffd700;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.6),
+                0 0 40px rgba(255, 215, 0, 0.4);
+            animation: goldPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes goldPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px rgba(255, 215, 0, 0.8),
+                    0 0 20px rgba(255, 215, 0, 0.6),
+                    0 0 40px rgba(255, 215, 0, 0.4);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 15px rgba(255, 215, 0, 1),
+                    0 0 30px rgba(255, 215, 0, 0.8),
+                    0 0 60px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        /* Rank 3 - Iron with Grey Particles */
+        .rank-3 {
+            color: #b0b0b0;
+            text-shadow: 
+                0 0 10px rgba(176, 176, 176, 0.8),
+                0 0 20px rgba(176, 176, 176, 0.6),
+                0 0 40px rgba(176, 176, 176, 0.4);
+            animation: ironPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes ironPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px rgba(176, 176, 176, 0.8),
+                    0 0 20px rgba(176, 176, 176, 0.6),
+                    0 0 40px rgba(176, 176, 176, 0.4);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 15px rgba(176, 176, 176, 1),
+                    0 0 30px rgba(176, 176, 176, 0.8),
+                    0 0 60px rgba(176, 176, 176, 0.6);
+            }
+        }
+
+        .rank-other { color: #666; }
+
+        /* Row glow for top 3 */
+        .row-1 {
+            background: linear-gradient(90deg, rgba(0, 229, 255, 0.05) 0%, transparent 100%);
+            border-left: 3px solid #00e5ff;
+        }
+
+        .row-2 {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.05) 0%, transparent 100%);
+            border-left: 3px solid #ffd700;
+        }
+
+        .row-3 {
+            background: linear-gradient(90deg, rgba(176, 176, 176, 0.05) 0%, transparent 100%);
+            border-left: 3px solid #b0b0b0;
+        }
+
+        /* Player Info */
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-head {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            image-rendering: pixelated;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-head-rank-1 {
+            border-color: #00e5ff;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-head-rank-2 {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-head-rank-3 {
+            border-color: #b0b0b0;
+            box-shadow: 0 0 15px rgba(176, 176, 176, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .player-uuid {
+            font-size: 0.75rem;
+            color: #444;
+            font-family: monospace;
+            margin-top: 2px;
+        }
+
+        /* Stats */
+        .stat {
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .stat-kills { color: #ff6b6b; }
+        .stat-skill { color: #4ecdc4; }
+        .stat-playtime { color: #ffe66d; }
+        .stat-rebirths { color: #a8e6cf; }
+        .stat-streak { color: #ff8b94; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .leaderboard-header,
+            .leaderboard-row {
+                grid-template-columns: 60px 1fr 100px 100px 100px 80px 80px;
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .player-head {
+                width: 36px;
+                height: 36px;
+            }
+        }
     </style>
+<base target="_blank">
 </head>
 <body>
-<div id="loading-screen">
-    <div class="loader-ring"></div>
-    <span>Light City SMP</span>
-</div>
-<nav class="navbar">
-    <div class="logo">Light<span>City</span>SMP</div>
-    <div class="nav-tabs">
-        <button class="nav-tab active" data-section="rules">Rules</button>
-        <button class="nav-tab" data-section="bracket">Bracket <span class="nav-badge">$70</span></button>
-    </div>
-</nav>
-<main>
-    <div class="hero">
-        <div class="hero-eyebrow">Official Event</div>
-        <h1>2v2 Tournament</h1>
-        <div class="hero-prize">$70 Prize Pool</div>
-        <p>Official rulebook and live bracket for the LightCitySMP 2v2 tournament.</p>
-    </div>
+    <canvas id="particle-canvas"></canvas>
 
-    <section id="rules" class="section active">
-        <div class="panel">
-            <div class="panel-header"><div class="panel-icon">📋</div><h2>Tournament Rulebook</h2></div>
-            <div class="panel-body">
-                <div class="rule-category">
-                    <div class="rule-cat-title">General Conduct</div>
-                    <div class="rule-list">
-                        <div class="rule-item"><span class="rule-num">01</span><span>All standard <strong>Light City SMP server rules</strong> are in full effect throughout the entire tournament.</span></div>
-                        <div class="rule-item"><span class="rule-num">02</span><span>Disruptive behavior, trolling, intentional griefing, or refusing to follow admin orders will result in <strong>immediate removal</strong>.</span></div>
-                        <div class="rule-item"><span class="rule-num">03</span><span>Any form of <strong>harassment or targeted toxicity</strong> is strictly forbidden.</span></div>
-                        <div class="rule-item"><span class="rule-num">04</span><span>By participating, you formally agree to every rule listed in this document.</span></div>
-                    </div>
-                </div>
-                <div class="rule-category">
-                    <div class="rule-cat-title">Equipment & Inventory</div>
-                    <div class="rule-list">
-                        <div class="rule-item"><span class="rule-num">05</span><span>Participants must compete using their own <strong>independently acquired</strong> in-game gear.</span></div>
-                        <div class="rule-item"><span class="rule-num">06</span><span>A mandatory <strong>inventory check</strong> will be conducted prior to entering the arena. Under-geared players may not be permitted to participate.</span></div>
-                        <div class="rule-item"><span class="rule-num">07</span><span>The <strong>Mace</strong> is permitted but strictly limited to one per participant — only the designated holder may use it.</span></div>
-                        <div class="rule-item"><span class="rule-num">08</span><span>Utility items including <strong>TNT and TNT Minecarts</strong> are permitted unless listed on the server's banned items registry.</span></div>
-                    </div>
-                </div>
-                <div class="rule-category">
-                    <div class="rule-cat-title">2v2 Format</div>
-                    <div class="rule-list">
-                        <div class="rule-item"><span class="rule-num">09</span><span>Teams consist of exactly <strong>2 players</strong>. Team compositions are locked at registration.</span></div>
-                        <div class="rule-item"><span class="rule-num">10</span><span>Matches are <strong>Best of 3</strong>. Grand Finals are Best of 5.</span></div>
-                        <div class="rule-item"><span class="rule-num">11</span><span>Both players must be present within <strong>5 minutes</strong> of match time or the team forfeits.</span></div>
-                        <div class="rule-item"><span class="rule-num">12</span><span>Admin rulings on disputes are <strong>final and non-negotiable</strong>.</span></div>
-                    </div>
-                </div>
-                <div class="rule-category">
-                    <div class="rule-cat-title">Anti-Cheat & PC Check</div>
-                    <div class="rule-list">
-                        <div class="rule-item"><span class="rule-num">13</span><span>All participants consent to a <strong>PC check</strong> by owner and admins to verify no exploits or hack clients are present.</span></div>
-                        <div class="rule-item"><span class="rule-num">14</span><span>Any player found using a <strong>banned client, macro, or exploit</strong> will be immediately disqualified and banned from future events.</span></div>
-                        <div class="rule-item"><span class="rule-num">15</span><span>Suggested minimum tier is <strong>lt3+</strong> on any recognized tierlist. Include the tierlist name when registering.</span></div>
-                    </div>
-                </div>
-                <div class="rule-category">
-                    <div class="rule-cat-title">Prizes & Payouts</div>
-                    <div class="rule-list">
-                        <div class="rule-item"><span class="rule-num">16</span><span>The total prize pool is <strong>$70.00 USD</strong>. Distribution will be announced before the tournament begins.</span></div>
-                        <div class="rule-item"><span class="rule-num">17</span><span>Prizes are paid out within <strong>48 hours</strong> of the final match. Disqualified teams forfeit any prize claim.</span></div>
-                        <div class="rule-item"><span class="rule-num">18</span><span>Administration reserves the right to <strong>withhold or redistribute prizes</strong> in the event of confirmed rule violations.</span></div>
-                    </div>
-                </div>
+    <div class="container">
+        <h1>Leaderboard</h1>
+        <p class="subtitle">Top Players Ranked by Performance</p>
+
+        <!-- Leaderboard Display -->
+        <div class="leaderboard-wrapper">
+            <div class="leaderboard-header">
+                <div>#</div>
+                <div>Player</div>
+                <div>Kills</div>
+                <div>Skill Points</div>
+                <div>Playtime</div>
+                <div>Rebirths</div>
+                <div>Kill Streak</div>
+            </div>
+            <div id="leaderboard-body">
+                <!-- Populated by JavaScript -->
             </div>
         </div>
-    </section>
-
-    <section id="bracket" class="section">
-        <div class="panel">
-            <div class="panel-header"><div class="panel-icon">🏆</div><h2>Tournament Bracket — 2v2 · 8 Teams</h2></div>
-            <div class="panel-body">
-                <div class="bracket-legend">
-                    <div class="legend-item"><div class="legend-dot l-tbd"></div>TBD / Empty</div>
-                    <div class="legend-item"><div class="legend-dot l-winner"></div>Winner / Advanced</div>
-                    <div class="legend-item"><div class="legend-dot l-dq"></div>Disqualified</div>
-                    <div class="legend-item"><div class="legend-dot l-finals"></div>Grand Final</div>
-                </div>
-                <div class="bracket-wrapper">
-                    <div id="bracket-root"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-</main>
-
-<script>
-// ================================================================
-//  BRACKET CONFIG — 8 teams, 4 per side, 2 matches per side in Q1
-//
-//  FLOW:
-//    Q1  — 2 matches per side
-//    Q2W — winners of Q1[0] vs Q1[1] per side
-//    Q2L — losers  of Q1[0] vs Q1[1] per side
-//    QF  — Q2W winner vs Q2L winner per side
-//    SF  — QF left winner vs QF right winner
-//    GF  — Grand Final
-//
-//  winner: 0=pending | 1=team1 won | 2=team2 won
-//  dq1/dq2: true = disqualified
-// ================================================================
-const BRACKET_CONFIG = {
-    q1L: [
-        { team1:"StixxxYMC & 4re5", team2:"Ven & Doofy",            score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"TBD",              team2:"TBD",                     score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    ],
-    q1R: [
-        { team1:"Fapyyyh & Lapis",  team2:"erwamu_ & cihanby",       score1:"", score2:"", winner:0, dq1:false, dq2:false },
-        { team1:"blvckwoooolf & critical", team2:"Cl0ud2rs & NotPlushiexd", score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    ],
-    q2wL: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    q2wR: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    q2lL: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    q2lR: { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    qfL:  { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    qfR:  { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    sf:   { score1:"", score2:"", winner:0, dq1:false, dq2:false },
-    gf:   { team1:"TBD", team2:"TBD", score1:"", score2:"", winner:0, dq1:false, dq2:false },
-};
-// ================================================================
-
-function adv(m, t1, t2) {
-    if (!m.winner) return null;
-    return m.winner===1 ? (m.dq1?null:t1) : (m.dq2?null:t2);
-}
-function lose(m, t1, t2) {
-    if (!m.winner) return null;
-    return m.winner===1 ? t2 : t1;
-}
-
-function buildBracket() {
-    const C = BRACKET_CONFIG;
-
-    const q2wLt = [adv(C.q1L[0],C.q1L[0].team1,C.q1L[0].team2), adv(C.q1L[1],C.q1L[1].team1,C.q1L[1].team2)];
-    const q2lLt = [lose(C.q1L[0],C.q1L[0].team1,C.q1L[0].team2), lose(C.q1L[1],C.q1L[1].team1,C.q1L[1].team2)];
-    const q2wRt = [adv(C.q1R[0],C.q1R[0].team1,C.q1R[0].team2), adv(C.q1R[1],C.q1R[1].team1,C.q1R[1].team2)];
-    const q2lRt = [lose(C.q1R[0],C.q1R[0].team1,C.q1R[0].team2), lose(C.q1R[1],C.q1R[1].team1,C.q1R[1].team2)];
-
-    const qfLt = [adv(C.q2wL,q2wLt[0],q2wLt[1]), adv(C.q2lL,q2lLt[0],q2lLt[1])];
-    const qfRt = [adv(C.q2wR,q2wRt[0],q2wRt[1]), adv(C.q2lR,q2lRt[0],q2lRt[1])];
-    const sfT  = [adv(C.qfL,qfLt[0],qfLt[1]), adv(C.qfR,qfRt[0],qfRt[1])];
-    const gfT1 = adv(C.sf,sfT[0],sfT[1]) || C.gf.team1;
-    const gfT2 = C.gf.team2;
-
-    function slot(name, score, isWinner, isDQ) {
-        const isTbd = !name||name==='TBD';
-        let cls = isTbd?'tbd':'filled';
-        if (isDQ) cls='dq';
-        else if (isWinner) cls='winner';
-        return `<div class="team-slot ${cls}">
-            <span class="team-name">${name||'TBD'}</span>
-            ${isDQ?'<span class="dq-tag">DQ</span>':(score?`<span class="team-score">${score}</span>`:'')}
-        </div>`;
-    }
-
-    function mtch(t1,t2,s1,s2,w,dq1,dq2,finals) {
-        const w1=w===1&&!dq1, w2=w===2&&!dq2;
-        return `<div class="match${finals?' finals':''}">
-            ${slot(t1,s1,w1,dq1)}${slot(t2,s2,w2,dq2)}
-        </div>`;
-    }
-
-    function svgMerge(dir,h) {
-        const mid=h/2, q1y=h*.25, q3y=h*.75;
-        return dir==='left'
-            ?`<svg width="28" height="${h}" style="overflow:visible;flex-shrink:0;display:block;">
-                <polyline points="0,${q1y} 14,${q1y} 14,${mid} 28,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
-                <polyline points="0,${q3y} 14,${q3y} 14,${mid} 28,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
-              </svg>`
-            :`<svg width="28" height="${h}" style="overflow:visible;flex-shrink:0;display:block;">
-                <polyline points="28,${q1y} 14,${q1y} 14,${mid} 0,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
-                <polyline points="28,${q3y} 14,${q3y} 14,${mid} 0,${mid}" fill="none" stroke="#243345" stroke-width="1.5"/>
-              </svg>`;
-    }
-
-    function svgLine(w) {
-        return `<svg width="${w}" height="28" style="overflow:visible;flex-shrink:0;display:block;align-self:center;">
-            <line x1="0" y1="14" x2="${w}" y2="14" stroke="#243345" stroke-width="1.5"/>
-        </svg>`;
-    }
-
-    const MH  = 58;
-    const GLG = 64;
-    const LH  = 29;
-    const Q1_H = MH + GLG + MH;   // 180
-    const QF_TOP = Q1_H/2 - MH/2; // 61
-    const SF_TOP = QF_TOP - 19;
-
-    document.getElementById('bracket-root').innerHTML = `
-<div style="display:flex;align-items:flex-start;justify-content:center;gap:0;min-width:900px;">
-
-  <!-- Q1 LEFT -->
-  <div class="round-col">
-    <div class="round-label">Round 1</div>
-    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      ${mtch(C.q1L[0].team1,C.q1L[0].team2,C.q1L[0].score1,C.q1L[0].score2,C.q1L[0].winner,C.q1L[0].dq1,C.q1L[0].dq2)}
-      ${mtch(C.q1L[1].team1,C.q1L[1].team2,C.q1L[1].score1,C.q1L[1].score2,C.q1L[1].winner,C.q1L[1].dq1,C.q1L[1].dq2)}
     </div>
-  </div>
 
-  <!-- CONN Q1L → Q2L -->
-  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
-    ${svgLine(24)}${svgLine(24)}
-  </div>
+    <script>
+        // ==========================================
+        // PLAYER CONFIG - EDIT THIS ARRAY
+        // ==========================================
+        // Add new players by copying the template:
+        // {
+        //   username: "PlayerName",
+        //   uuid: "PLAYER-UUID-HERE",        // For Minecraft heads
+        //   kills: 0,
+        //   skillPoints: 0,
+        //   playtime: "0h 0m",               // Format: "Xh Ym"
+        //   rebirths: 0,
+        //   killStreak: 0
+        // }
 
-  <!-- Q2 LEFT -->
-  <div class="round-col">
-    <div class="round-label">Round 2</div>
-    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      <div>
-        <div class="round-tag winners">WINNERS</div>
-        ${mtch(q2wLt[0],q2wLt[1],C.q2wL.score1,C.q2wL.score2,C.q2wL.winner,C.q2wL.dq1,C.q2wL.dq2)}
-      </div>
-      <div>
-        <div class="round-tag losers">LOSERS</div>
-        ${mtch(q2lLt[0],q2lLt[1],C.q2lL.score1,C.q2lL.score2,C.q2lL.winner,C.q2lL.dq1,C.q2lL.dq2)}
-      </div>
-    </div>
-  </div>
+        const PLAYERS = [
+            {
+                username: "Notch",
+                uuid: "069a79f4-44e9-4726-a5be-fca90e38aaf5",
+                kills: 15420,
+                skillPoints: 98500,
+                playtime: "342h 15m",
+                rebirths: 12,
+                killStreak: 89
+            },
+            {
+                username: "Dream",
+                uuid: "ec70bcaf-702f-4bb8-b48d-276fa52a7bf5",
+                kills: 12800,
+                skillPoints: 87600,
+                playtime: "298h 45m",
+                rebirths: 10,
+                killStreak: 156
+            },
+            {
+                username: "Technoblade",
+                uuid: "b876ec32-e396-476b-a115-8438d83c67d4",
+                kills: 9999,
+                skillPoints: 72000,
+                playtime: "256h 30m",
+                rebirths: 8,
+                killStreak: 999
+            },
+            {
+                username: "TommyInnit",
+                uuid: "2d88aa22-8d38-4f36-a7e1-3e5f2f4c6e7a",
+                kills: 5430,
+                skillPoints: 42100,
+                playtime: "189h 20m",
+                rebirths: 5,
+                killStreak: 45
+            },
+            {
+                username: "WilburSoot",
+                uuid: "1f02e8e8-8c2e-4b8a-9f1d-3e5f2f4c6e7b",
+                kills: 3200,
+                skillPoints: 28500,
+                playtime: "145h 50m",
+                rebirths: 3,
+                killStreak: 23
+            }
+        ];
 
-  <!-- CONN Q2L → QFL -->
-  <div style="margin-top:${LH}px;">
-    ${svgMerge('left', Q1_H + 19)}
-  </div>
+        // Sort by kills (descending) - Change to sort by other stats:
+        // skillPoints, rebirths, killStreak, etc.
+        const SORT_BY = "kills";
 
-  <!-- QF LEFT -->
-  <div class="round-col" style="margin-top:${QF_TOP}px;">
-    <div class="round-label">Quarterfinal</div>
-    ${mtch(qfLt[0],qfLt[1],C.qfL.score1,C.qfL.score2,C.qfL.winner,C.qfL.dq1,C.qfL.dq2)}
-  </div>
+        // ==========================================
+        // PARTICLE SYSTEM
+        // ==========================================
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
 
-  <!-- CONN QFL → SF -->
-  <div style="margin-top:${QF_TOP+LH+MH/2-14}px;">${svgLine(28)}</div>
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-  <!-- SF + GF CENTER -->
-  <div style="display:flex;flex-direction:column;align-items:center;margin-top:${SF_TOP}px;">
-    <div class="round-label">Semifinal</div>
-    ${mtch(sfT[0],sfT[1],C.sf.score1,C.sf.score2,C.sf.winner,C.sf.dq1,C.sf.dq2)}
-    <svg width="2" height="20" style="display:block;margin:8px auto 0;">
-      <line x1="1" y1="0" x2="1" y2="20" stroke="#243345" stroke-width="1.5"/>
-    </svg>
-    <div class="round-label" style="color:var(--gold);margin-top:8px;">Grand Final</div>
-    <div class="finals-crown">🏆</div>
-    ${mtch(gfT1,gfT2,C.gf.score1,C.gf.score2,C.gf.winner,C.gf.dq1,C.gf.dq2,true)}
-  </div>
+        class Particle {
+            constructor(x, y, color, type) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.type = type;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = -Math.random() * 2 - 0.5;
+                this.life = 1;
+                this.decay = Math.random() * 0.01 + 0.005;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = Math.random() * 0.05 + 0.02;
+            }
 
-  <!-- CONN SF → QFR -->
-  <div style="margin-top:${QF_TOP+LH+MH/2-14}px;">${svgLine(28)}</div>
+            update() {
+                this.x += this.speedX + Math.sin(this.wobble) * 0.5;
+                this.y += this.speedY;
+                this.wobble += this.wobbleSpeed;
+                this.life -= this.decay;
+                this.size *= 0.99;
+            }
 
-  <!-- QF RIGHT -->
-  <div class="round-col" style="margin-top:${QF_TOP}px;">
-    <div class="round-label">Quarterfinal</div>
-    ${mtch(qfRt[0],qfRt[1],C.qfR.score1,C.qfR.score2,C.qfR.winner,C.qfR.dq1,C.qfR.dq2)}
-  </div>
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
 
-  <!-- CONN QFR → Q2R -->
-  <div style="margin-top:${LH}px;">
-    ${svgMerge('right', Q1_H + 19)}
-  </div>
+                if (this.type === 'diamond') {
+                    // Diamond shape
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y - this.size);
+                    ctx.lineTo(this.x + this.size, this.y);
+                    ctx.lineTo(this.x, this.y + this.size);
+                    ctx.lineTo(this.x - this.size, this.y);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (this.type === 'gold') {
+                    // Circle with sparkle
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Sparkle
+                    if (Math.random() > 0.8) {
+                        ctx.strokeStyle = this.color;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(this.x - this.size * 2, this.y);
+                        ctx.lineTo(this.x + this.size * 2, this.y);
+                        ctx.moveTo(this.x, this.y - this.size * 2);
+                        ctx.lineTo(this.x, this.y + this.size * 2);
+                        ctx.stroke();
+                    }
+                } else {
+                    // Iron - square particles
+                    ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+                }
 
-  <!-- Q2 RIGHT -->
-  <div class="round-col">
-    <div class="round-label">Round 2</div>
-    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      <div>
-        <div class="round-tag winners">WINNERS</div>
-        ${mtch(q2wRt[0],q2wRt[1],C.q2wR.score1,C.q2wR.score2,C.q2wR.winner,C.q2wR.dq1,C.q2wR.dq2)}
-      </div>
-      <div>
-        <div class="round-tag losers">LOSERS</div>
-        ${mtch(q2lRt[0],q2lRt[1],C.q2lR.score1,C.q2lR.score2,C.q2lR.winner,C.q2lR.dq1,C.q2lR.dq2)}
-      </div>
-    </div>
-  </div>
+                ctx.restore();
+            }
+        }
 
-  <!-- CONN Q2R → Q1R -->
-  <div style="margin-top:${LH}px;display:flex;flex-direction:column;gap:${GLG}px;">
-    ${svgLine(24)}${svgLine(24)}
-  </div>
+        function spawnParticles() {
+            // Get positions of top 3 rows
+            const rows = document.querySelectorAll('.leaderboard-row');
 
-  <!-- Q1 RIGHT -->
-  <div class="round-col">
-    <div class="round-label">Round 1</div>
-    <div style="display:flex;flex-direction:column;gap:${GLG}px;">
-      ${mtch(C.q1R[0].team1,C.q1R[0].team2,C.q1R[0].score1,C.q1R[0].score2,C.q1R[0].winner,C.q1R[0].dq1,C.q1R[0].dq2)}
-      ${mtch(C.q1R[1].team1,C.q1R[1].team2,C.q1R[1].score1,C.q1R[1].score2,C.q1R[1].winner,C.q1R[1].dq1,C.q1R[1].dq2)}
-    </div>
-  </div>
+            rows.forEach((row, index) => {
+                if (index >= 3) return;
 
-</div>`;
-}
+                const rect = row.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
 
-document.querySelectorAll('.nav-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.section).classList.add('active');
-        if (tab.dataset.section==='bracket') buildBracket();
-    });
-});
+                let color, type;
+                if (index === 0) {
+                    color = '#00e5ff';
+                    type = 'diamond';
+                } else if (index === 1) {
+                    color = '#ffd700';
+                    type = 'gold';
+                } else {
+                    color = '#b0b0b0';
+                    type = 'iron';
+                }
 
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const ls = document.getElementById('loading-screen');
-        ls.style.opacity = '0';
-        setTimeout(() => ls.style.display='none', 600);
-    }, 900);
-});
-</script>
+                // Spawn particles around the row
+                for (let i = 0; i < 3; i++) {
+                    const offsetX = (Math.random() - 0.5) * rect.width * 0.8;
+                    const offsetY = (Math.random() - 0.5) * rect.height;
+                    particles.push(new Particle(centerX + offsetX, centerY + offsetY, color, type));
+                }
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles = particles.filter(p => p.life > 0);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            if (Math.random() > 0.7) {
+                spawnParticles();
+            }
+
+            animationId = requestAnimationFrame(animateParticles);
+        }
+
+        // Start particle system after leaderboard renders
+        setTimeout(() => {
+            animateParticles();
+        }, 500);
+
+        // ==========================================
+        // LEADERBOARD RENDERING
+        // ==========================================
+
+        // Minecraft head API (Crafthead/crafatar)
+        function getHeadUrl(uuid) {
+            // Remove dashes for API compatibility
+            const cleanUuid = uuid.replace(/-/g, '');
+            return `https://crafthead.net/avatar/${cleanUuid}/64`;
+        }
+
+        // Format numbers with commas
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+
+        // Render leaderboard
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard-body');
+
+            // Sort players
+            const sortedPlayers = [...PLAYERS].sort((a, b) => b[SORT_BY] - a[SORT_BY]);
+
+            container.innerHTML = sortedPlayers.map((player, index) => {
+                const rank = index + 1;
+                const rankClass = rank === 1 ? 'rank-1' : 
+                                 rank === 2 ? 'rank-2' : 
+                                 rank === 3 ? 'rank-3' : 'rank-other';
+
+                const rowClass = rank <= 3 ? `row-${rank}` : '';
+                const headClass = rank <= 3 ? `player-head-rank-${rank}` : '';
+
+                const headUrl = getHeadUrl(player.uuid);
+
+                return `
+                    <div class="leaderboard-row ${rowClass}">
+                        <div class="rank ${rankClass}">#${rank}</div>
+                        <div class="player-info">
+                            <img src="${headUrl}" alt="${player.username}" class="player-head ${headClass}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23333%22/><text x=%2232%22 y=%2232%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23666%22 font-size=%2224%22>?</text></svg>'">
+                            <div>
+                                <div class="player-name">${player.username}</div>
+                                <div class="player-uuid">${player.uuid}</div>
+                            </div>
+                        </div>
+                        <div class="stat stat-kills">${formatNumber(player.kills)}</div>
+                        <div class="stat stat-skill">${formatNumber(player.skillPoints)}</div>
+                        <div class="stat stat-playtime">${player.playtime}</div>
+                        <div class="stat stat-rebirths">${formatNumber(player.rebirths)}</div>
+                        <div class="stat stat-streak">${formatNumber(player.killStreak)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize
+        renderLeaderboard();
+    </script>
 </body>
 </html>
