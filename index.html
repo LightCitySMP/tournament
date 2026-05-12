@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
+    <title>LightCitySMP - Leaderboard</title>
     <style>
         * {
             margin: 0;
@@ -30,52 +30,85 @@
             text-align: center;
             font-size: 3rem;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-transform: uppercase;
             letter-spacing: 3px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.6));
+            }
         }
 
         .subtitle {
             text-align: center;
-            color: #666;
+            color: #b8860b;
             margin-bottom: 40px;
             font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        /* LightCitySMP decorative elements */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 15px;
+        }
+
+        .divider-line {
+            height: 1px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+        }
+
+        .divider-icon {
+            color: #FFD700;
+            font-size: 1.2rem;
         }
 
         /* Leaderboard Table */
         .leaderboard-wrapper {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 215, 0, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.15);
             border-radius: 16px;
             overflow: hidden;
             backdrop-filter: blur(10px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(255, 215, 0, 0.05);
             position: relative;
             z-index: 10;
         }
 
         .leaderboard-header {
             display: grid;
-            grid-template-columns: 80px 1fr 120px 140px 140px 120px 120px;
+            grid-template-columns: 80px 1fr 120px 140px 140px 120px;
             padding: 20px 30px;
-            background: rgba(102, 126, 234, 0.1);
-            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            background: rgba(255, 215, 0, 0.08);
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 1px;
-            color: #667eea;
+            color: #FFD700;
         }
 
         /* Row with particle container */
         .leaderboard-row {
             display: grid;
-            grid-template-columns: 80px 1fr 120px 140px 140px 120px 120px;
+            grid-template-columns: 80px 1fr 120px 140px 140px 120px;
             padding: 16px 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.04);
             transition: all 0.3s ease;
             align-items: center;
             position: relative;
@@ -83,8 +116,9 @@
         }
 
         .leaderboard-row:hover {
-            background: rgba(102, 126, 234, 0.05);
+            background: rgba(255, 215, 0, 0.05);
             transform: translateX(5px);
+            border-left: 3px solid #FFD700;
         }
 
         .leaderboard-row:last-child {
@@ -199,17 +233,17 @@
 
         /* Row glow for top 3 */
         .row-1 {
-            background: linear-gradient(90deg, rgba(0, 229, 255, 0.05) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(0, 229, 255, 0.08) 0%, transparent 100%);
             border-left: 3px solid #00e5ff;
         }
 
         .row-2 {
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.05) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.08) 0%, transparent 100%);
             border-left: 3px solid #ffd700;
         }
 
         .row-3 {
-            background: linear-gradient(90deg, rgba(176, 176, 176, 0.05) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(176, 176, 176, 0.08) 0%, transparent 100%);
             border-left: 3px solid #b0b0b0;
         }
 
@@ -227,8 +261,9 @@
             height: 48px;
             border-radius: 8px;
             image-rendering: pixelated;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background: #1a1a1a;
         }
 
         .player-head-rank-1 {
@@ -327,15 +362,6 @@
             }
         }
 
-        .player-uuid {
-            font-size: 0.75rem;
-            color: #444;
-            font-family: monospace;
-            margin-top: 2px;
-            position: relative;
-            z-index: 2;
-        }
-
         /* Stats */
         .stat {
             text-align: center;
@@ -349,13 +375,27 @@
         .stat-skill { color: #4ecdc4; }
         .stat-playtime { color: #ffe66d; }
         .stat-rebirths { color: #a8e6cf; }
-        .stat-streak { color: #ff8b94; }
+
+        /* Loading state */
+        .loading-head {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
 
         /* Responsive */
         @media (max-width: 900px) {
             .leaderboard-header,
             .leaderboard-row {
-                grid-template-columns: 60px 1fr 100px 100px 100px 80px 80px;
+                grid-template-columns: 60px 1fr 100px 100px 100px 80px;
                 padding: 12px 15px;
                 font-size: 0.9rem;
             }
@@ -370,8 +410,20 @@
 </head>
 <body>
     <div class="container">
+        <div class="divider">
+            <div class="divider-line"></div>
+            <div class="divider-icon">✦</div>
+            <div class="divider-line"></div>
+        </div>
+
         <h1>Leaderboard</h1>
-        <p class="subtitle">Top Players Ranked by Performance</p>
+        <p class="subtitle">LightCitySMP Season 5</p>
+
+        <div class="divider">
+            <div class="divider-line"></div>
+            <div class="divider-icon">◆</div>
+            <div class="divider-line"></div>
+        </div>
 
         <!-- Leaderboard Display -->
         <div class="leaderboard-wrapper">
@@ -382,7 +434,6 @@
                 <div>Skill Points</div>
                 <div>Playtime</div>
                 <div>Rebirths</div>
-                <div>Kill Streak</div>
             </div>
             <div id="leaderboard-body">
                 <!-- Populated by JavaScript -->
@@ -394,68 +445,113 @@
         // ==========================================
         // PLAYER CONFIG - EDIT THIS ARRAY
         // ==========================================
-        // Add new players by copying the template:
+        // Just add username and stats - UUID auto-fetched!
+        // For cracked/offline players, Steve skin auto-shows
         // {
         //   username: "PlayerName",
-        //   uuid: "PLAYER-UUID-HERE",        // For Minecraft heads
         //   kills: 0,
         //   skillPoints: 0,
-        //   playtime: "0h 0m",               // Format: "Xh Ym"
-        //   rebirths: 0,
-        //   killStreak: 0
+        //   playtime: "0h 0m",
+        //   rebirths: 0
         // }
 
         const PLAYERS = [
             {
+                username: "_samsters",
+                kills: 25000,
+                skillPoints: 120000,
+                playtime: "500h 30m",
+                rebirths: 20
+            },
+            {
                 username: "Notch",
-                uuid: "069a79f4-44e9-4726-a5be-fca90e38aaf5",
                 kills: 15420,
                 skillPoints: 98500,
                 playtime: "342h 15m",
-                rebirths: 12,
-                killStreak: 89
+                rebirths: 12
             },
             {
                 username: "Dream",
-                uuid: "ec70bcaf-702f-4bb8-b48d-276fa52a7bf5",
                 kills: 12800,
                 skillPoints: 87600,
                 playtime: "298h 45m",
-                rebirths: 10,
-                killStreak: 156
+                rebirths: 10
             },
             {
                 username: "Technoblade",
-                uuid: "b876ec32-e396-476b-a115-8438d83c67d4",
                 kills: 9999,
                 skillPoints: 72000,
                 playtime: "256h 30m",
-                rebirths: 8,
-                killStreak: 999
+                rebirths: 8
             },
             {
                 username: "TommyInnit",
-                uuid: "2d88aa22-8d38-4f36-a7e1-3e5f2f4c6e7a",
                 kills: 5430,
                 skillPoints: 42100,
                 playtime: "189h 20m",
-                rebirths: 5,
-                killStreak: 45
+                rebirths: 5
             },
             {
                 username: "WilburSoot",
-                uuid: "1f02e8e8-8c2e-4b8a-9f1d-3e5f2f4c6e7b",
                 kills: 3200,
                 skillPoints: 28500,
                 playtime: "145h 50m",
-                rebirths: 3,
-                killStreak: 23
+                rebirths: 3
             }
         ];
 
         // Sort by kills (descending) - Change to sort by other stats:
-        // skillPoints, rebirths, killStreak, etc.
+        // skillPoints, rebirths, etc.
         const SORT_BY = "kills";
+
+        // ==========================================
+        // UUID FETCHING SYSTEM (PlayerDB - More Reliable)
+        // ==========================================
+        const uuidCache = new Map();
+
+        async function fetchUUID(username) {
+            if (uuidCache.has(username)) {
+                return uuidCache.get(username);
+            }
+
+            try {
+                // Try PlayerDB first (handles case sensitivity better)
+                const response = await fetch(`https://playerdb.co/api/player/minecraft/${username}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.data && data.data.player) {
+                        const uuid = data.data.player.raw_id;
+                        uuidCache.set(username, uuid);
+                        return uuid;
+                    }
+                }
+
+                // Fallback to Mojang API
+                const mojangResponse = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+                if (mojangResponse.ok) {
+                    const data = await mojangResponse.json();
+                    const uuid = data.id;
+                    uuidCache.set(username, uuid);
+                    return uuid;
+                }
+
+                // Player not found (cracked/offline) - return null for Steve skin
+                uuidCache.set(username, null);
+                return null;
+            } catch (error) {
+                console.error(`Failed to fetch UUID for ${username}:`, error);
+                uuidCache.set(username, null);
+                return null;
+            }
+        }
+
+        function getHeadUrl(uuid, username) {
+            if (!uuid) {
+                // Cracked/offline player - return Steve skin
+                return `https://crafthead.net/avatar/Steve/64`;
+            }
+            return `https://crafthead.net/avatar/${uuid}/64`;
+        }
 
         // ==========================================
         // PER-ROW PARTICLE SYSTEM
@@ -573,23 +669,21 @@
         // LEADERBOARD RENDERING
         // ==========================================
 
-        // Minecraft head API (Crafthead/crafatar)
-        function getHeadUrl(uuid) {
-            const cleanUuid = uuid.replace(/-/g, '');
-            return `https://crafthead.net/avatar/${cleanUuid}/64`;
-        }
-
         // Format numbers with commas
         function formatNumber(num) {
             return num.toLocaleString();
         }
 
         // Render leaderboard
-        function renderLeaderboard() {
+        async function renderLeaderboard() {
             const container = document.getElementById('leaderboard-body');
 
             // Sort players
             const sortedPlayers = [...PLAYERS].sort((a, b) => b[SORT_BY] - a[SORT_BY]);
+
+            // Fetch all UUIDs first
+            const uuidPromises = sortedPlayers.map(p => fetchUUID(p.username));
+            const uuids = await Promise.all(uuidPromises);
 
             container.innerHTML = sortedPlayers.map((player, index) => {
                 const rank = index + 1;
@@ -601,7 +695,8 @@
                 const headClass = rank <= 3 ? `player-head-rank-${rank}` : '';
                 const nameClass = rank <= 3 ? `player-name-rank-${rank}` : '';
 
-                const headUrl = getHeadUrl(player.uuid);
+                const uuid = uuids[index];
+                const headUrl = getHeadUrl(uuid, player.username);
 
                 // Only top 3 get particles
                 const particleCanvas = rank <= 3 ? '<canvas class="row-particles"></canvas>' : '';
@@ -612,17 +707,15 @@
                         <div class="row-content">
                             <div class="rank ${rankClass}">#${rank}</div>
                             <div class="player-info">
-                                <img src="${headUrl}" alt="${player.username}" class="player-head ${headClass}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23333%22/><text x=%2232%22 y=%2232%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23666%22 font-size=%2224%22>?</text></svg>'">
+                                <img src="${headUrl}" alt="${player.username}" class="player-head ${headClass}" onerror="this.src='https://crafthead.net/avatar/Steve/64'">
                                 <div>
                                     <div class="player-name ${nameClass}">${player.username}</div>
-                                    <div class="player-uuid">${player.uuid}</div>
                                 </div>
                             </div>
                             <div class="stat stat-kills">${formatNumber(player.kills)}</div>
                             <div class="stat stat-skill">${formatNumber(player.skillPoints)}</div>
                             <div class="stat stat-playtime">${player.playtime}</div>
                             <div class="stat stat-rebirths">${formatNumber(player.rebirths)}</div>
-                            <div class="stat stat-streak">${formatNumber(player.killStreak)}</div>
                         </div>
                     </div>
                 `;
