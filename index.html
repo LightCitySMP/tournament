@@ -45,17 +45,6 @@
             font-size: 1.1rem;
         }
 
-        /* Particle Canvas */
-        #particle-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
         /* Leaderboard Table */
         .leaderboard-wrapper {
             background: rgba(255, 255, 255, 0.03);
@@ -81,6 +70,7 @@
             color: #667eea;
         }
 
+        /* Row with particle container */
         .leaderboard-row {
             display: grid;
             grid-template-columns: 80px 1fr 120px 140px 140px 120px 120px;
@@ -89,6 +79,7 @@
             transition: all 0.3s ease;
             align-items: center;
             position: relative;
+            overflow: hidden;
         }
 
         .leaderboard-row:hover {
@@ -100,12 +91,30 @@
             border-bottom: none;
         }
 
+        /* Particle canvas per row */
+        .row-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .row-content {
+            position: relative;
+            z-index: 2;
+            display: contents;
+        }
+
         /* Rank Styling with Glow Effects */
         .rank {
             font-size: 1.5rem;
             font-weight: 800;
             text-align: center;
             position: relative;
+            z-index: 2;
         }
 
         /* Rank 1 - Diamond with Light Blue Glow */
@@ -209,6 +218,8 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            position: relative;
+            z-index: 2;
         }
 
         .player-head {
@@ -235,10 +246,85 @@
             box-shadow: 0 0 15px rgba(176, 176, 176, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
+        /* Glowing Player Names */
         .player-name {
             font-weight: 600;
             font-size: 1.1rem;
             color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .player-name-rank-1 {
+            color: #00e5ff;
+            text-shadow: 
+                0 0 10px rgba(0, 229, 255, 0.8),
+                0 0 20px rgba(0, 229, 255, 0.6),
+                0 0 40px rgba(0, 229, 255, 0.4);
+            animation: nameDiamondPulse 2s ease-in-out infinite;
+        }
+
+        .player-name-rank-2 {
+            color: #ffd700;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.6),
+                0 0 40px rgba(255, 215, 0, 0.4);
+            animation: nameGoldPulse 2s ease-in-out infinite;
+        }
+
+        .player-name-rank-3 {
+            color: #b0b0b0;
+            text-shadow: 
+                0 0 10px rgba(176, 176, 176, 0.8),
+                0 0 20px rgba(176, 176, 176, 0.6),
+                0 0 40px rgba(176, 176, 176, 0.4);
+            animation: nameIronPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes nameDiamondPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 8px rgba(0, 229, 255, 0.9),
+                    0 0 16px rgba(0, 229, 255, 0.7),
+                    0 0 32px rgba(0, 229, 255, 0.5);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 12px rgba(0, 229, 255, 1),
+                    0 0 24px rgba(0, 229, 255, 0.9),
+                    0 0 48px rgba(0, 229, 255, 0.7);
+            }
+        }
+
+        @keyframes nameGoldPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 8px rgba(255, 215, 0, 0.9),
+                    0 0 16px rgba(255, 215, 0, 0.7),
+                    0 0 32px rgba(255, 215, 0, 0.5);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 12px rgba(255, 215, 0, 1),
+                    0 0 24px rgba(255, 215, 0, 0.9),
+                    0 0 48px rgba(255, 215, 0, 0.7);
+            }
+        }
+
+        @keyframes nameIronPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 8px rgba(176, 176, 176, 0.9),
+                    0 0 16px rgba(176, 176, 176, 0.7),
+                    0 0 32px rgba(176, 176, 176, 0.5);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 12px rgba(176, 176, 176, 1),
+                    0 0 24px rgba(176, 176, 176, 0.9),
+                    0 0 48px rgba(176, 176, 176, 0.7);
+            }
         }
 
         .player-uuid {
@@ -246,6 +332,8 @@
             color: #444;
             font-family: monospace;
             margin-top: 2px;
+            position: relative;
+            z-index: 2;
         }
 
         /* Stats */
@@ -253,6 +341,8 @@
             text-align: center;
             font-weight: 600;
             font-size: 1.05rem;
+            position: relative;
+            z-index: 2;
         }
 
         .stat-kills { color: #ff6b6b; }
@@ -279,8 +369,6 @@
 <base target="_blank">
 </head>
 <body>
-    <canvas id="particle-canvas"></canvas>
-
     <div class="container">
         <h1>Leaderboard</h1>
         <p class="subtitle">Top Players Ranked by Performance</p>
@@ -370,52 +458,51 @@
         const SORT_BY = "kills";
 
         // ==========================================
-        // PARTICLE SYSTEM
+        // PER-ROW PARTICLE SYSTEM
         // ==========================================
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationId;
+        const rowParticleSystems = new Map();
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        class Particle {
-            constructor(x, y, color, type) {
-                this.x = x;
-                this.y = y;
+        class RowParticle {
+            constructor(canvas, color, type) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
                 this.color = color;
                 this.type = type;
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * this.canvas.width;
+                this.y = this.canvas.height + Math.random() * 20;
                 this.size = Math.random() * 3 + 1;
-                this.speedX = (Math.random() - 0.5) * 2;
-                this.speedY = -Math.random() * 2 - 0.5;
+                this.speedX = (Math.random() - 0.5) * 1.5;
+                this.speedY = -Math.random() * 1.5 - 0.3;
                 this.life = 1;
-                this.decay = Math.random() * 0.01 + 0.005;
+                this.decay = Math.random() * 0.008 + 0.004;
                 this.wobble = Math.random() * Math.PI * 2;
-                this.wobbleSpeed = Math.random() * 0.05 + 0.02;
+                this.wobbleSpeed = Math.random() * 0.04 + 0.02;
             }
 
             update() {
-                this.x += this.speedX + Math.sin(this.wobble) * 0.5;
+                this.x += this.speedX + Math.sin(this.wobble) * 0.3;
                 this.y += this.speedY;
                 this.wobble += this.wobbleSpeed;
                 this.life -= this.decay;
-                this.size *= 0.99;
+
+                if (this.life <= 0 || this.y < -10) {
+                    this.reset();
+                }
             }
 
             draw() {
+                const ctx = this.ctx;
                 ctx.save();
-                ctx.globalAlpha = this.life;
+                ctx.globalAlpha = this.life * 0.8;
                 ctx.fillStyle = this.color;
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 8;
                 ctx.shadowColor = this.color;
 
                 if (this.type === 'diamond') {
-                    // Diamond shape
                     ctx.beginPath();
                     ctx.moveTo(this.x, this.y - this.size);
                     ctx.lineTo(this.x + this.size, this.y);
@@ -424,12 +511,10 @@
                     ctx.closePath();
                     ctx.fill();
                 } else if (this.type === 'gold') {
-                    // Circle with sparkle
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                     ctx.fill();
-                    // Sparkle
-                    if (Math.random() > 0.8) {
+                    if (Math.random() > 0.85) {
                         ctx.strokeStyle = this.color;
                         ctx.lineWidth = 1;
                         ctx.beginPath();
@@ -440,7 +525,6 @@
                         ctx.stroke();
                     }
                 } else {
-                    // Iron - square particles
                     ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
                 }
 
@@ -448,58 +532,42 @@
             }
         }
 
-        function spawnParticles() {
-            // Get positions of top 3 rows
-            const rows = document.querySelectorAll('.leaderboard-row');
+        function initRowParticles(rowElement, color, type, particleCount = 15) {
+            const canvas = rowElement.querySelector('.row-particles');
+            if (!canvas) return;
 
-            rows.forEach((row, index) => {
-                if (index >= 3) return;
+            const rect = rowElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
 
-                const rect = row.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-
-                let color, type;
-                if (index === 0) {
-                    color = '#00e5ff';
-                    type = 'diamond';
-                } else if (index === 1) {
-                    color = '#ffd700';
-                    type = 'gold';
-                } else {
-                    color = '#b0b0b0';
-                    type = 'iron';
-                }
-
-                // Spawn particles around the row
-                for (let i = 0; i < 3; i++) {
-                    const offsetX = (Math.random() - 0.5) * rect.width * 0.8;
-                    const offsetY = (Math.random() - 0.5) * rect.height;
-                    particles.push(new Particle(centerX + offsetX, centerY + offsetY, color, type));
-                }
-            });
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            particles = particles.filter(p => p.life > 0);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
-            if (Math.random() > 0.7) {
-                spawnParticles();
+            const particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new RowParticle(canvas, color, type));
             }
 
-            animationId = requestAnimationFrame(animateParticles);
-        }
+            const system = {
+                canvas,
+                particles,
+                animationId: null,
+                active: true
+            };
 
-        // Start particle system after leaderboard renders
-        setTimeout(() => {
-            animateParticles();
-        }, 500);
+            function animate() {
+                if (!system.active) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+
+                system.animationId = requestAnimationFrame(animate);
+            }
+
+            animate();
+            rowParticleSystems.set(rowElement, system);
+        }
 
         // ==========================================
         // LEADERBOARD RENDERING
@@ -507,7 +575,6 @@
 
         // Minecraft head API (Crafthead/crafatar)
         function getHeadUrl(uuid) {
-            // Remove dashes for API compatibility
             const cleanUuid = uuid.replace(/-/g, '');
             return `https://crafthead.net/avatar/${cleanUuid}/64`;
         }
@@ -532,28 +599,60 @@
 
                 const rowClass = rank <= 3 ? `row-${rank}` : '';
                 const headClass = rank <= 3 ? `player-head-rank-${rank}` : '';
+                const nameClass = rank <= 3 ? `player-name-rank-${rank}` : '';
 
                 const headUrl = getHeadUrl(player.uuid);
 
+                // Only top 3 get particles
+                const particleCanvas = rank <= 3 ? '<canvas class="row-particles"></canvas>' : '';
+
                 return `
-                    <div class="leaderboard-row ${rowClass}">
-                        <div class="rank ${rankClass}">#${rank}</div>
-                        <div class="player-info">
-                            <img src="${headUrl}" alt="${player.username}" class="player-head ${headClass}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23333%22/><text x=%2232%22 y=%2232%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23666%22 font-size=%2224%22>?</text></svg>'">
-                            <div>
-                                <div class="player-name">${player.username}</div>
-                                <div class="player-uuid">${player.uuid}</div>
+                    <div class="leaderboard-row ${rowClass}" data-rank="${rank}">
+                        ${particleCanvas}
+                        <div class="row-content">
+                            <div class="rank ${rankClass}">#${rank}</div>
+                            <div class="player-info">
+                                <img src="${headUrl}" alt="${player.username}" class="player-head ${headClass}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23333%22/><text x=%2232%22 y=%2232%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23666%22 font-size=%2224%22>?</text></svg>'">
+                                <div>
+                                    <div class="player-name ${nameClass}">${player.username}</div>
+                                    <div class="player-uuid">${player.uuid}</div>
+                                </div>
                             </div>
+                            <div class="stat stat-kills">${formatNumber(player.kills)}</div>
+                            <div class="stat stat-skill">${formatNumber(player.skillPoints)}</div>
+                            <div class="stat stat-playtime">${player.playtime}</div>
+                            <div class="stat stat-rebirths">${formatNumber(player.rebirths)}</div>
+                            <div class="stat stat-streak">${formatNumber(player.killStreak)}</div>
                         </div>
-                        <div class="stat stat-kills">${formatNumber(player.kills)}</div>
-                        <div class="stat stat-skill">${formatNumber(player.skillPoints)}</div>
-                        <div class="stat stat-playtime">${player.playtime}</div>
-                        <div class="stat stat-rebirths">${formatNumber(player.rebirths)}</div>
-                        <div class="stat stat-streak">${formatNumber(player.killStreak)}</div>
                     </div>
                 `;
             }).join('');
+
+            // Initialize particle systems for top 3 rows
+            setTimeout(() => {
+                const rows = container.querySelectorAll('.leaderboard-row');
+                rows.forEach((row, index) => {
+                    const rank = index + 1;
+                    if (rank === 1) {
+                        initRowParticles(row, '#00e5ff', 'diamond', 20);
+                    } else if (rank === 2) {
+                        initRowParticles(row, '#ffd700', 'gold', 18);
+                    } else if (rank === 3) {
+                        initRowParticles(row, '#b0b0b0', 'iron', 15);
+                    }
+                });
+            }, 100);
         }
+
+        // Handle window resize for particle canvases
+        window.addEventListener('resize', () => {
+            rowParticleSystems.forEach((system, rowElement) => {
+                const canvas = system.canvas;
+                const rect = rowElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            });
+        });
 
         // Initialize
         renderLeaderboard();
